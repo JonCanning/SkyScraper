@@ -8,7 +8,7 @@ namespace SkyScraper
 {
     public class Scraper : IObservable<HtmlDoc>
     {
-        readonly ConcurrentDictionary<string, HtmlDoc> scrapedHtmlDocs;
+        readonly ConcurrentDictionary<string, string> scrapedHtmlDocs;
         readonly ITaskRunner taskRunner;
         readonly IHttpClient httpClient;
         readonly List<IObserver<HtmlDoc>> observers;
@@ -18,7 +18,7 @@ namespace SkyScraper
         {
             taskRunner = taskRunner ?? new AsyncTaskRunner();
             httpClient = httpClient ?? new AsyncHttpClient();
-            scrapedHtmlDocs = new ConcurrentDictionary<string, HtmlDoc>();
+            scrapedHtmlDocs = new ConcurrentDictionary<string, string>();
             observers = new List<IObserver<HtmlDoc>>();
         }
 
@@ -42,9 +42,12 @@ namespace SkyScraper
                 return;
             var task = httpClient.GetString(uri);
             taskRunner.Run(task);
-            var html = task.Result;
-            taskRunner.Run(() => StoreHtmlDoc(uri, html));
-
+            try
+            {
+                var html = task.Result;
+                taskRunner.Run(() => StoreHtmlDoc(uri, html));
+            }
+            catch { }
         }
 
         void StoreHtmlDoc(Uri uri, string html)
@@ -55,7 +58,7 @@ namespace SkyScraper
                                   Uri = uri,
                                   Html = html
                               };
-            scrapedHtmlDocs.AddOrUpdate(uri.PathAndQuery, htmlDoc, (s, doc) => doc);
+            scrapedHtmlDocs.AddOrUpdate(uri.PathAndQuery, s => null, (s, doc) => doc);
             observers.ForEach(o => o.OnNext(htmlDoc));
             var htmlDocument = new HtmlDocument();
             htmlDocument.LoadHtml(html);
@@ -71,7 +74,17 @@ namespace SkyScraper
 
         IEnumerable<string> LocalLinks(IEnumerable<HtmlNode> linkNodeCollection)
         {
-            return linkNodeCollection.Select(x => x.Attributes["href"].Value).Where(x => (!x.StartsWith("http", StringComparison.Ordinal) && !x.StartsWith("//")) || x.StartsWith(baseUri.ToString()));
+            return linkNodeCollection.Select(x => x.Attributes["href"].Value).Where(x => LinkIsNotExternal(x) || LinkIsLocalAndDoesNotContainAnchor(x));
+        }
+
+        bool LinkIsLocalAndDoesNotContainAnchor(string x)
+        {
+            return x.StartsWith(baseUri.ToString()) && !x.Contains("#");
+        }
+
+        static bool LinkIsNotExternal(string x)
+        {
+            return !x.StartsWith("http", StringComparison.Ordinal) && !x.StartsWith("//");
         }
 
         public IDisposable Subscribe(IObserver<HtmlDoc> observer)

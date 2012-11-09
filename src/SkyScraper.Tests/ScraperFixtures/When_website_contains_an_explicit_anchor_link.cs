@@ -1,14 +1,15 @@
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NSubstitute;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace SkyScraper.Tests.ScraperFixtures
 {
     [TestFixture]
-    class When_website_contains_an_external_link : ConcernForScraper
+    class When_website_contains_an_explicit_anchor_link : ConcernForScraper
     {
         readonly List<HtmlDoc> htmlDocs = new List<HtmlDoc>();
         string page;
@@ -18,9 +19,10 @@ namespace SkyScraper.Tests.ScraperFixtures
             base.Context();
             Uri = new Uri("http://test");
             page = @"<html>
-                         <a href=""http://foo"">link1</a>
+                         <a href=""http://test/#here"">link1</a>
                          </html>";
             HttpClient.GetString(Uri).Returns(new Task<string>(() => page));
+            HttpClient.GetString(Arg.Is<Uri>(x => x != Uri)).Returns(new Task<string>(() => { throw new HttpRequestException(); }));
             OnNext = x => htmlDocs.Add(x);
         }
 
@@ -39,19 +41,7 @@ namespace SkyScraper.Tests.ScraperFixtures
         [Test]
         public void Then_link_should_not_be_scraped()
         {
-            HttpClient.DidNotReceive().GetString(Arg.Is<Uri>(x => x.ToString() == "http://foo"));
-        }
-    }
-
-    [TestFixture, Explicit]
-    class When_
-    {
-        [Test]
-        public void Then_()
-        {
-            var scraper = new Scraper();
-            scraper.Subscribe(x => Console.WriteLine(x.Uri));
-            scraper.Scrape(new Uri("http://www.craftyfella.com"));
+            HttpClient.DidNotReceive().GetString(Arg.Is<Uri>(x => x.ToString() == "http://test/#here"));
         }
     }
 }
