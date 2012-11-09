@@ -58,7 +58,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ScraperFixtures\ConcernForScraper.cs" />
-    <Compile Include="ScraperFixtures\When_scraping_a_website_with_three_pages.cs" />
+    <Compile Include="ScraperFixtures\When_website_contains_an_explicit_local_link.cs" />
+    <Compile Include="ScraperFixtures\When_website_contains_an_external_link.cs" />
+    <Compile Include="ScraperFixtures\When_website_contains_an_external_link_inheriting_protocol.cs" />
+    <Compile Include="ScraperFixtures\When_website_contains_an_unscrapable_link.cs" />
+    <Compile Include="ScraperFixtures\When_website_contains_no_links.cs" />
+    <Compile Include="ScraperFixtures\When_website_has_three_pages.cs" />
     <Compile Include="ConcernFor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

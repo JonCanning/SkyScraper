@@ -12,6 +12,7 @@ namespace SkyScraper
         readonly ITaskRunner taskRunner;
         readonly IHttpClient httpClient;
         readonly List<IObserver<HtmlDoc>> observers;
+        Uri baseUri;
 
         public Scraper()
         {
@@ -30,12 +31,15 @@ namespace SkyScraper
 
         public void Scrape(Uri uri)
         {
+            baseUri = uri;
             DownloadDocument(uri);
             taskRunner.WaitForAllTasks();
         }
 
         void DownloadDocument(Uri uri)
         {
+            if (!uri.Scheme.StartsWith("http") || !Uri.IsWellFormedUriString(uri.ToString(), UriKind.RelativeOrAbsolute))
+                return;
             var task = httpClient.GetString(uri);
             taskRunner.Run(task);
             var html = task.Result;
@@ -58,14 +62,16 @@ namespace SkyScraper
             var linkNodeCollection = htmlDocument.DocumentNode.SelectNodes("//a[@href]");
             if (linkNodeCollection == null || !linkNodeCollection.Any())
                 return;
-            var localLinks =
-                linkNodeCollection.Where(
-                    x => !x.Attributes["href"].Value.StartsWith("http")).
-                    Select(x => x.Attributes["href"].Value);
-            foreach (var downloadUri in localLinks.Select(href => new Uri(new Uri(uri.GetLeftPart(UriPartial.Authority)), href)))
+            var localLinks = LocalLinks(linkNodeCollection);
+            foreach (var downloadUri in localLinks.Select(href => new Uri(baseUri, href)))
             {
                 DownloadDocument(downloadUri);
             }
+        }
+
+        IEnumerable<string> LocalLinks(IEnumerable<HtmlNode> linkNodeCollection)
+        {
+            return linkNodeCollection.Select(x => x.Attributes["href"].Value).Where(x => (!x.StartsWith("http", StringComparison.Ordinal) && !x.StartsWith("//")) || x.StartsWith(baseUri.ToString()));
         }
 
         public IDisposable Subscribe(IObserver<HtmlDoc> observer)
