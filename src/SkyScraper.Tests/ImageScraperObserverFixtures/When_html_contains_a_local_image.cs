@@ -3,10 +3,10 @@ using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
 
-namespace SkyScraper.Tests.ImageScrapingObserverFixtures
+namespace SkyScraper.Tests.ImageScraperObserverFixtures
 {
     [TestFixture]
-    class When_html_contains_a_local_image : ConcernForImageScrapingObserverOnNext
+    class When_html_contains_a_local_image : ConcernForImageScraperObserverOnNext
     {
         protected override void Context()
         {

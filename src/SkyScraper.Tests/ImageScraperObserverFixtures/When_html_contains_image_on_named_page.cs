@@ -3,18 +3,18 @@ using System.Threading.Tasks;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace SkyScraper.Tests.ImageScrapingObserverFixtures
+namespace SkyScraper.Tests.ImageScraperObserverFixtures
 {
     [TestFixture]
-    class When_html_contains_an_explicit_local_image : ConcernForImageScrapingObserverOnNext
+    class When_html_contains_image_on_named_page : ConcernForImageScraperObserverOnNext
     {
         protected override void Context()
         {
             base.Context();
             HtmlDoc.Html = @"<html>
-                         <img src=""http://test/image.png"" />
+                         <img src=""image.png"" />
                          </html>";
-            HtmlDoc.Uri = new Uri("http://test/");
+            HtmlDoc.Uri = new Uri("http://test/index.html");
             HttpClient.GetByteArray(Arg.Any<Uri>()).Returns(new Task<byte[]>(() => new byte[0]));
         }
 

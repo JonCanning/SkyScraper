@@ -1,9 +1,9 @@
 ﻿using NSubstitute;
 using SkyScraper.Observers.ImageScraper;
 
-namespace SkyScraper.Tests.ImageScrapingObserverFixtures
+namespace SkyScraper.Tests.ImageScraperObserverFixtures
 {
-    abstract class ConcernForImageScrapingObserverOnNext : ConcernFor<ImageScraperObserver>
+    abstract class ConcernForImageScraperObserverOnNext : ConcernFor<ImageScraperObserver>
     {
         protected ITaskRunner TaskRunner;
         protected IHttpClient HttpClient;

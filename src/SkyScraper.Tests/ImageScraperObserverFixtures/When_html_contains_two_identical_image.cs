@@ -3,10 +3,10 @@ using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
 
-namespace SkyScraper.Tests.ImageScrapingObserverFixtures
+namespace SkyScraper.Tests.ImageScraperObserverFixtures
 {
     [TestFixture]
-    class When_html_contains_two_identical_images : ConcernForImageScrapingObserverOnNext
+    class When_html_contains_two_identical_images : ConcernForImageScraperObserverOnNext
     {
         protected override void Context()
         {

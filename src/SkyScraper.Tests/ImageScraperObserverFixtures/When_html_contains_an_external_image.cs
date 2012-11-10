@@ -2,10 +2,10 @@ using System;
 using NSubstitute;
 using NUnit.Framework;
 
-namespace SkyScraper.Tests.ImageScrapingObserverFixtures
+namespace SkyScraper.Tests.ImageScraperObserverFixtures
 {
     [TestFixture]
-    class When_html_contains_an_external_image : ConcernForImageScrapingObserverOnNext
+    class When_html_contains_an_external_image : ConcernForImageScraperObserverOnNext
     {
         protected override void Context()
         {
