@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace SkyScraper
 {
-    public class ImageScrapingObserver : IObserver<HtmlDoc>
+    public class ImageScrapingObserver : IObserver<HtmlDoc>, IDisposable
     {
         readonly ConcurrentDictionary<string, string> downloadedImages;
         readonly ITaskRunner taskRunner;
@@ -74,6 +74,11 @@ namespace SkyScraper
 
         public void OnCompleted()
         {
+        }
+
+        public void Dispose()
+        {
+            taskRunner.WaitForAllTasks();
         }
     }
 
