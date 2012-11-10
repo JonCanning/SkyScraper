@@ -1,19 +1,18 @@
 using HtmlAgilityPack;
 using System;
 using System.Collections.Concurrent;
-using System.IO;
 using System.Linq;
 
-namespace SkyScraper
+namespace SkyScraper.Observers.ImageScraper
 {
-    public class ImageScrapingObserver : IObserver<HtmlDoc>, IDisposable
+    public class ImageScraperObserver : IObserver<HtmlDoc>, IDisposable
     {
         readonly ConcurrentDictionary<string, string> downloadedImages;
         readonly ITaskRunner taskRunner;
         readonly IHttpClient httpClient;
         readonly IFileWriter fileWriter;
 
-        public ImageScrapingObserver(IFileWriter fileWriter)
+        public ImageScraperObserver(IFileWriter fileWriter)
         {
             this.fileWriter = fileWriter;
             taskRunner = taskRunner ?? new AsyncTaskRunner();
@@ -21,7 +20,7 @@ namespace SkyScraper
             downloadedImages = new ConcurrentDictionary<string, string>();
         }
 
-        public ImageScrapingObserver(ITaskRunner taskRunner, IHttpClient httpClient, IFileWriter fileWriter)
+        public ImageScraperObserver(ITaskRunner taskRunner, IHttpClient httpClient, IFileWriter fileWriter)
             : this(fileWriter)
         {
             this.taskRunner = taskRunner;
@@ -53,7 +52,6 @@ namespace SkyScraper
             if (downloadedImages.ContainsKey(fileName))
                 return;
             downloadedImages.TryAdd(fileName, null);
-            Console.WriteLine(uri.ToString());
             var task = httpClient.GetByteArray(uri);
             taskRunner.Run(task);
             byte[] imgBytes;
@@ -80,29 +78,5 @@ namespace SkyScraper
         {
             taskRunner.WaitForAllTasks();
         }
-    }
-
-    public class FileWriter : IFileWriter
-    {
-        DirectoryInfo directoryInfo;
-
-        public FileWriter(DirectoryInfo directoryInfo)
-        {
-            this.directoryInfo = directoryInfo;
-        }
-
-        public void Write(string fileName, byte[] bytes)
-        {
-            fileName = Path.Combine(directoryInfo.FullName, fileName);
-            using (var fileStream = File.OpenWrite(fileName))
-            {
-                fileStream.Write(bytes, 0, bytes.Length);
-            }
-        }
-    }
-
-    public interface IFileWriter
-    {
-        void Write(string fileName, byte[] bytes);
     }
 }

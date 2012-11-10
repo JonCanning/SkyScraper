@@ -1,8 +1,9 @@
 ﻿using NSubstitute;
+using SkyScraper.Observers.ImageScraper;
 
 namespace SkyScraper.Tests.ImageScrapingObserverFixtures
 {
-    abstract class ConcernForImageScrapingObserverOnNext : ConcernFor<ImageScrapingObserver>
+    abstract class ConcernForImageScrapingObserverOnNext : ConcernFor<ImageScraperObserver>
     {
         protected ITaskRunner TaskRunner;
         protected IHttpClient HttpClient;
@@ -17,9 +18,9 @@ namespace SkyScraper.Tests.ImageScrapingObserverFixtures
             HtmlDoc = new HtmlDoc();
         }
 
-        protected override ImageScrapingObserver CreateClassUnderTest()
+        protected override ImageScraperObserver CreateClassUnderTest()
         {
-            return new ImageScrapingObserver(TaskRunner, HttpClient, FileWriter);
+            return new ImageScraperObserver(TaskRunner, HttpClient, FileWriter);
         }
 
         protected override void Because()
