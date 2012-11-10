@@ -38,8 +38,7 @@ namespace SkyScraper
 
         void DownloadDocument(Uri uri)
         {
-            if (!uri.Scheme.StartsWith("http") || !Uri.IsWellFormedUriString(uri.ToString(), UriKind.RelativeOrAbsolute))
-                return;
+            if (scrapedHtmlDocs.ContainsKey(uri.PathAndQuery)) return;
             var task = httpClient.GetString(uri);
             taskRunner.Run(task);
             try
@@ -52,13 +51,12 @@ namespace SkyScraper
 
         void StoreHtmlDoc(Uri uri, string html)
         {
-            if (scrapedHtmlDocs.ContainsKey(uri.PathAndQuery)) return;
             var htmlDoc = new HtmlDoc
                               {
                                   Uri = uri,
                                   Html = html
                               };
-            scrapedHtmlDocs.AddOrUpdate(uri.PathAndQuery, s => null, (s, doc) => doc);
+            scrapedHtmlDocs.TryAdd(uri.PathAndQuery, null);
             observers.ForEach(o => o.OnNext(htmlDoc));
             var htmlDocument = new HtmlDocument();
             htmlDocument.LoadHtml(html);
@@ -74,17 +72,7 @@ namespace SkyScraper
 
         IEnumerable<string> LocalLinks(IEnumerable<HtmlNode> linkNodeCollection)
         {
-            return linkNodeCollection.Select(x => x.Attributes["href"].Value).Where(x => LinkIsNotExternal(x) || LinkIsLocalAndDoesNotContainAnchor(x));
-        }
-
-        bool LinkIsLocalAndDoesNotContainAnchor(string x)
-        {
-            return x.StartsWith(baseUri.ToString()) && !x.Contains("#");
-        }
-
-        static bool LinkIsNotExternal(string x)
-        {
-            return !x.StartsWith("http", StringComparison.Ordinal) && !x.StartsWith("//");
+            return linkNodeCollection.Select(x => x.Attributes["href"].Value).Where(x => x.LinkIsLocal(baseUri.ToString()) && x.LinkDoesNotContainAnchor());
         }
 
         public IDisposable Subscribe(IObserver<HtmlDoc> observer)

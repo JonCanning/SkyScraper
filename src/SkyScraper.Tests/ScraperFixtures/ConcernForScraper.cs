@@ -1,6 +1,5 @@
 using NSubstitute;
 using System;
-using System.Threading.Tasks;
 
 namespace SkyScraper.Tests.ScraperFixtures
 {
@@ -13,7 +12,7 @@ namespace SkyScraper.Tests.ScraperFixtures
 
         protected override void Context()
         {
-            TaskRunner = new TestTaskRunner();
+            TaskRunner = new SyncTaskRunner();
             HttpClient = Substitute.For<IHttpClient>();
         }
 
@@ -27,25 +26,6 @@ namespace SkyScraper.Tests.ScraperFixtures
         protected override void Because()
         {
             SUT.Scrape(Uri);
-        }
-    }
-
-    class TestTaskRunner : ITaskRunner
-    {
-        public void Run(Action action)
-        {
-            action();
-        }
-
-        public Task Run(Task task)
-        {
-            task.Start();
-            return task;
-        }
-
-        public void WaitForAllTasks()
-        {
-
         }
     }
 }

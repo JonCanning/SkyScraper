@@ -58,7 +58,15 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ImageScrapingObserverFixtures\ConcernForImageScrapingObserver.cs" />
+    <Compile Include="ImageScrapingObserverFixtures\When_html_contains_an_explicit_local_image.cs" />
+    <Compile Include="ImageScrapingObserverFixtures\When_html_contains_an_external_image.cs" />
+    <Compile Include="ImageScrapingObserverFixtures\When_html_contains_a_local_image.cs" />
+    <Compile Include="ImageScrapingObserverFixtures\When_html_contains_a_local_image_and_httpclient_throws_exception.cs" />
+    <Compile Include="ImageScrapingObserverFixtures\When_html_contains_image_on_named_page.cs" />
+    <Compile Include="ImageScrapingObserverFixtures\When_html_contains_two_identical_image.cs" />
     <Compile Include="ScraperFixtures\ConcernForScraper.cs" />
+    <Compile Include="ScraperFixtures\When_.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_anchor_link.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_explicit_anchor_link.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_explicit_local_link.cs" />
@@ -69,6 +77,9 @@
     <Compile Include="ScraperFixtures\When_website_has_three_pages.cs" />
     <Compile Include="ConcernFor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ScraperFixtures\When_website_has_two_identical_links.cs" />
+    <Compile Include="ScraperFixtures\When_website_returns_exception_from_page.cs" />
+    <Compile Include="SyncTaskRunner.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -79,6 +90,7 @@
       <Name>SkyScraper</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

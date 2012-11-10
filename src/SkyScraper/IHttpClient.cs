@@ -6,5 +6,6 @@ namespace SkyScraper
     public interface IHttpClient
     {
         Task<string> GetString(Uri uri);
+        Task<byte[]> GetByteArray(Uri uri);
     }
 }

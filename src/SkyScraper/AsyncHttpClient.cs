@@ -11,5 +11,11 @@ namespace SkyScraper
             var httpClient = new HttpClient();
             return httpClient.GetStringAsync(uri);
         }
+
+        public Task<byte[]> GetByteArray(Uri uri)
+        {
+            var httpClient = new HttpClient();
+            return httpClient.GetByteArrayAsync(uri);
+        }
     }
 }
