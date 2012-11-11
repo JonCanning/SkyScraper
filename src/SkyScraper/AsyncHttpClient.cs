@@ -6,15 +6,19 @@ namespace SkyScraper
 {
     public class AsyncHttpClient : IHttpClient
     {
+        readonly HttpClient httpClient;
+
+        public AsyncHttpClient()
+        {
+            httpClient = new HttpClient { Timeout = TimeSpan.FromMinutes(1) };
+        }
         public Task<string> GetString(Uri uri)
         {
-            var httpClient = new HttpClient();
             return httpClient.GetStringAsync(uri);
         }
 
         public Task<byte[]> GetByteArray(Uri uri)
         {
-            var httpClient = new HttpClient();
             return httpClient.GetByteArrayAsync(uri);
         }
     }

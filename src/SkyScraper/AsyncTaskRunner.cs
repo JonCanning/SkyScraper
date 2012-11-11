@@ -11,14 +11,15 @@ namespace SkyScraper
 
         public void Run(Action action)
         {
-            var task = Task.Factory.StartNew(action);
+            var task = new Task(action);
             Run(task);
         }
 
         public async Task Run(Task task)
         {
             var guid = Guid.NewGuid();
-            tasks.AddOrUpdate(guid, task, (g, t) => t);
+            tasks.TryAdd(guid, task);
+            task.Start();
             await task;
             Task outTask;
             tasks.TryRemove(guid, out outTask);

@@ -41,13 +41,13 @@ namespace SkyScraper
         {
             if (scrapedHtmlDocs.ContainsKey(uri.PathAndQuery))
                 return;
-            httpClient.Try(x =>
-            {
-                var task = x.GetString(uri);
-                taskRunner.Run(task);
-                var html = task.Result;
-                taskRunner.Run(() => StoreHtmlDoc(uri, html));
-            });
+            var task = httpClient.GetString(uri);
+            taskRunner.Run(task);
+            task.Try(x =>
+                         {
+                             var html = task.Result;
+                             taskRunner.Run(() => StoreHtmlDoc(uri, html));
+                         });
         }
 
         void StoreHtmlDoc(Uri uri, string html)

@@ -51,13 +51,13 @@ namespace SkyScraper.Observers.ImageScraper
             var fileName = uri.Segments.Last();
             if (!downloadedImages.TryAdd(fileName, null))
                 return;
-            httpClient.Try(x =>
-                               {
-                                   var task = x.GetByteArray(uri);
-                                   taskRunner.Run(task);
-                                   var imgBytes = task.Result;
-                                   taskRunner.Run(() => fileWriter.Write(fileName, imgBytes));
-                               });
+            var task = httpClient.GetByteArray(uri);
+            taskRunner.Run(task);
+            task.Try(x =>
+                         {
+                             var imgBytes = x.Result;
+                             taskRunner.Run(() => fileWriter.Write(fileName, imgBytes));
+                         });
         }
 
         public void OnError(Exception error)
