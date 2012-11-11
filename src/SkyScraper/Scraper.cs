@@ -38,7 +38,8 @@ namespace SkyScraper
 
         void DownloadDocument(Uri uri)
         {
-            if (scrapedHtmlDocs.ContainsKey(uri.PathAndQuery)) return;
+            if (scrapedHtmlDocs.ContainsKey(uri.PathAndQuery))
+                return;
             var task = httpClient.GetString(uri);
             taskRunner.Run(task);
             task.Try(x =>
@@ -55,7 +56,8 @@ namespace SkyScraper
                                   Uri = uri,
                                   Html = html
                               };
-            scrapedHtmlDocs.TryAdd(uri.PathAndQuery, null);
+            if (!scrapedHtmlDocs.TryAdd(uri.PathAndQuery, null))
+                return;
             observers.ForEach(o => o.OnNext(htmlDoc));
             var htmlDocument = new HtmlDocument();
             htmlDocument.LoadHtml(html);

@@ -66,7 +66,7 @@
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_image_on_named_page.cs" />
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_two_identical_image.cs" />
     <Compile Include="ScraperFixtures\ConcernForScraper.cs" />
-    <Compile Include="ScraperFixtures\When_.cs" />
+    <Compile Include="ScraperFixtures\When_running_against_a_real_website.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_anchor_link.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_explicit_anchor_link.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_explicit_local_link.cs" />

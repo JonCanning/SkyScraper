@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace SkyScraper.Observers.ImageScraper
 {
-    public class ImageScraperObserver : IObserver<HtmlDoc>, IDisposable
+    public class ImageScraperObserver : IObserver<HtmlDoc>
     {
         readonly ConcurrentDictionary<string, string> downloadedImages;
         readonly ITaskRunner taskRunner;
@@ -49,9 +49,8 @@ namespace SkyScraper.Observers.ImageScraper
         void DownloadImage(Uri uri)
         {
             var fileName = uri.AbsolutePath.TrimStart('/');
-            if (downloadedImages.ContainsKey(fileName))
+            if (!downloadedImages.TryAdd(fileName, null))
                 return;
-            downloadedImages.TryAdd(fileName, null);
             var task = httpClient.GetByteArray(uri);
             taskRunner.Run(task);
             task.Try(x =>
@@ -66,10 +65,6 @@ namespace SkyScraper.Observers.ImageScraper
         }
 
         public void OnCompleted()
-        {
-        }
-
-        public void Dispose()
         {
             taskRunner.WaitForAllTasks();
         }
