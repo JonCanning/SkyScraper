@@ -48,7 +48,6 @@ namespace SkyScraper.Observers.ImageScraper
 
         void DownloadImage(Uri uri)
         {
-            Console.WriteLine(uri.ToString());
             var fileName = uri.Segments.Last();
             if (!downloadedImages.TryAdd(fileName, null))
                 return;
