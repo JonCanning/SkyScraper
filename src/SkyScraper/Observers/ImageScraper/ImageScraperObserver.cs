@@ -54,16 +54,11 @@ namespace SkyScraper.Observers.ImageScraper
             downloadedImages.TryAdd(fileName, null);
             var task = httpClient.GetByteArray(uri);
             taskRunner.Run(task);
-            byte[] imgBytes;
-            try
-            {
-                imgBytes = task.Result;
-            }
-            catch
-            {
-                return;
-            }
-            taskRunner.Run(() => fileWriter.Write(fileName, imgBytes));
+            task.Try(x =>
+                         {
+                             var imgBytes = x.Result;
+                             taskRunner.Run(() => fileWriter.Write(fileName, imgBytes));
+                         });
         }
 
         public void OnError(Exception error)
