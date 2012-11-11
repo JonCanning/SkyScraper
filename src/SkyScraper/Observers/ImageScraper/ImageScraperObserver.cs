@@ -40,24 +40,25 @@ namespace SkyScraper.Observers.ImageScraper
             if (baseUri.Segments.Last().Contains('.'))
                 baseUri = new Uri(baseUri.ToString().Substring(0, baseUri.ToString().LastIndexOf('/')));
             var imgSrcs = linkNodeCollection.Select(x => x.Attributes["src"].Value).Where(x => x.LinkIsLocal(baseUri.ToString()));
-            foreach (var downloadUri in imgSrcs.Select(imgSrc => Uri.IsWellFormedUriString(imgSrc, UriKind.Absolute) ? imgSrc : baseUri + imgSrc))
+            foreach (var downloadUri in imgSrcs.Select(imgSrc => Uri.IsWellFormedUriString(imgSrc, UriKind.Absolute) ? new Uri(imgSrc) : new Uri(baseUri, imgSrc)))
             {
-                taskRunner.Run(() => DownloadImage(new Uri(downloadUri)));
+                taskRunner.Run(() => DownloadImage(downloadUri));
             }
         }
 
         void DownloadImage(Uri uri)
         {
-            var fileName = uri.AbsolutePath.TrimStart('/');
+            Console.WriteLine(uri.ToString());
+            var fileName = uri.Segments.Last();
             if (!downloadedImages.TryAdd(fileName, null))
                 return;
-            var task = httpClient.GetByteArray(uri);
-            taskRunner.Run(task);
-            task.Try(x =>
-                         {
-                             var imgBytes = x.Result;
-                             taskRunner.Run(() => fileWriter.Write(fileName, imgBytes));
-                         });
+            httpClient.Try(x =>
+                               {
+                                   var task = x.GetByteArray(uri);
+                                   taskRunner.Run(task);
+                                   var imgBytes = task.Result;
+                                   taskRunner.Run(() => fileWriter.Write(fileName, imgBytes));
+                               });
         }
 
         public void OnError(Exception error)

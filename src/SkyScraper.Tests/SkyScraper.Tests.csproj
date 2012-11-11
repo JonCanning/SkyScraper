@@ -63,6 +63,8 @@
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_an_external_image.cs" />
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_a_local_image.cs" />
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_a_local_image_and_httpclient_throws_exception.cs" />
+    <Compile Include="ImageScraperObserverFixtures\When_html_contains_a_local_image_in_an_explicit_subdirectory.cs" />
+    <Compile Include="ImageScraperObserverFixtures\When_html_contains_a_local_image_in_subdirectory.cs" />
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_image_on_named_page.cs" />
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_two_identical_image.cs" />
     <Compile Include="ScraperFixtures\ConcernForScraper.cs" />
@@ -72,8 +74,10 @@
     <Compile Include="ScraperFixtures\When_website_contains_an_explicit_local_link.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_external_link.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_external_link_inheriting_protocol.cs" />
+    <Compile Include="ScraperFixtures\When_website_contains_an_html_encoded_link.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_unscrapable_link.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_no_links.cs" />
+    <Compile Include="ScraperFixtures\When_scraping_a_subdirectory.cs" />
     <Compile Include="ScraperFixtures\When_website_has_three_pages.cs" />
     <Compile Include="ConcernFor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

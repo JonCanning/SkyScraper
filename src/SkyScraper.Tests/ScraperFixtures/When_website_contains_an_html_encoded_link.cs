@@ -1,14 +1,14 @@
-using FluentAssertions;
-using NSubstitute;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using FluentAssertions;
+using NSubstitute;
+using NUnit.Framework;
 
 namespace SkyScraper.Tests.ScraperFixtures
 {
     [TestFixture]
-    class When_website_contains_an_explicit_local_link : ConcernForScraper
+    class When_website_contains_an_html_encoded_link : ConcernForScraper
     {
         readonly List<HtmlDoc> htmlDocs = new List<HtmlDoc>();
         string page;
@@ -18,7 +18,7 @@ namespace SkyScraper.Tests.ScraperFixtures
             base.Context();
             Uri = new Uri("http://test");
             page = @"<html>
-                         <a href=""http://test/page1"">link1</a>
+                         <a href=""http://test/page1&amp;"">link1</a>
                          </html>";
             HttpClient.GetString(Uri).Returns(new Task<string>(() => page));
             HttpClient.GetString(Arg.Is<Uri>(x => x != Uri)).Returns(x => new Task<string>(() => x.Arg<Uri>().PathAndQuery));
@@ -38,9 +38,9 @@ namespace SkyScraper.Tests.ScraperFixtures
         }
 
         [Test]
-        public void Then_htmldocs_should_first_page()
+        public void Then_htmldocs_should_contain_first_page()
         {
-            htmlDocs.Should().Contain(x => x.Uri.ToString() == "http://test/page1" && x.Html == "/page1");
+            htmlDocs.Should().Contain(x => x.Uri.ToString() == "http://test/page1&" && x.Html == "/page1&");
         }
     }
 }

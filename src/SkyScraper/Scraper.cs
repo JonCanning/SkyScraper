@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 
 namespace SkyScraper
 {
@@ -40,13 +41,13 @@ namespace SkyScraper
         {
             if (scrapedHtmlDocs.ContainsKey(uri.PathAndQuery))
                 return;
-            var task = httpClient.GetString(uri);
-            taskRunner.Run(task);
-            task.Try(x =>
-                         {
-                             var html = task.Result;
-                             taskRunner.Run(() => StoreHtmlDoc(uri, html));
-                         });
+            httpClient.Try(x =>
+            {
+                var task = x.GetString(uri);
+                taskRunner.Run(task);
+                var html = task.Result;
+                taskRunner.Run(() => StoreHtmlDoc(uri, html));
+            });
         }
 
         void StoreHtmlDoc(Uri uri, string html)
@@ -65,7 +66,10 @@ namespace SkyScraper
             if (linkNodeCollection == null || !linkNodeCollection.Any())
                 return;
             var localLinks = LocalLinks(linkNodeCollection);
-            foreach (var downloadUri in localLinks.Select(href => new Uri(baseUri, href)))
+            var pageBaseUri = htmlDoc.Uri.Segments.Last().Contains('.') ? htmlDoc.Uri.ToString().Substring(0, htmlDoc.Uri.ToString().LastIndexOf('/')) : htmlDoc.Uri.ToString();
+            if (pageBaseUri.Last() != '/')
+                pageBaseUri += '/';
+            foreach (var downloadUri in localLinks.Select(href => new Uri(new Uri(pageBaseUri), href)))
             {
                 DownloadDocument(downloadUri);
             }
@@ -73,7 +77,7 @@ namespace SkyScraper
 
         IEnumerable<string> LocalLinks(IEnumerable<HtmlNode> linkNodeCollection)
         {
-            return linkNodeCollection.Select(x => x.Attributes["href"].Value).Where(x => x.LinkIsLocal(baseUri.ToString()) && x.LinkDoesNotContainAnchor());
+            return linkNodeCollection.Select(x => WebUtility.HtmlDecode(x.Attributes["href"].Value)).Where(x => x.LinkIsLocal(baseUri.ToString()) && x.LinkDoesNotContainAnchor());
         }
 
         public IDisposable Subscribe(IObserver<HtmlDoc> observer)
