@@ -7,7 +7,7 @@ namespace SkyScraper
 {
     public class AsyncTaskRunner : ITaskRunner
     {
-        readonly ConcurrentDictionary<int, Task> tasks = new ConcurrentDictionary<int, Task>();
+        readonly ConcurrentDictionary<Guid, Task> tasks = new ConcurrentDictionary<Guid, Task>();
 
         public void Run(Action action)
         {
@@ -17,10 +17,11 @@ namespace SkyScraper
 
         public async Task Run(Task task)
         {
-            tasks.AddOrUpdate(task.GetHashCode(), task, (i, t) => t);
+            var guid = Guid.NewGuid();
+            tasks.AddOrUpdate(guid, task, (g, t) => t);
             await task;
             Task outTask;
-            tasks.TryRemove(task.GetHashCode(), out outTask);
+            tasks.TryRemove(guid, out outTask);
         }
 
         public void WaitForAllTasks()
