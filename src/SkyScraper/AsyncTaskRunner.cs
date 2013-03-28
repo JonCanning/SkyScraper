@@ -9,10 +9,10 @@ namespace SkyScraper
     {
         readonly ConcurrentDictionary<Guid, Task> tasks = new ConcurrentDictionary<Guid, Task>();
 
-        public void Run(Action action)
+        public async void Run(Action action)
         {
             var task = new Task(action);
-            Run(task);
+            await Run(task);
         }
 
         public async Task Run(Task task)

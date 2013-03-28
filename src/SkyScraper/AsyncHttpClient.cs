@@ -12,14 +12,15 @@ namespace SkyScraper
         {
             httpClient = new HttpClient { Timeout = TimeSpan.FromMinutes(1) };
         }
-        public Task<string> GetString(Uri uri)
+
+        public async Task<string> GetString(Uri uri)
         {
-            return httpClient.GetStringAsync(uri);
+            return await httpClient.GetStringAsync(uri);
         }
 
-        public Task<byte[]> GetByteArray(Uri uri)
+        public async Task<byte[]> GetByteArray(Uri uri)
         {
-            return httpClient.GetByteArrayAsync(uri);
+            return await httpClient.GetByteArrayAsync(uri);
         }
     }
 }

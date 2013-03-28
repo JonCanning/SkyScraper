@@ -1,10 +1,10 @@
+using FluentAssertions;
+using NSubstitute;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
-using FluentAssertions;
-using NSubstitute;
-using NUnit.Framework;
 
 namespace SkyScraper.Tests.ScraperFixtures
 {
@@ -22,7 +22,7 @@ namespace SkyScraper.Tests.ScraperFixtures
                          <a href=""page1"">link1</a>
                          </html>";
             HttpClient.GetString(Uri).Returns(new Task<string>(() => page));
-            HttpClient.GetString(Arg.Is<Uri>(x => x != Uri)).Returns(new Task<string>(() => { throw new HttpRequestException(); }));
+            HttpClient.GetString(Arg.Is<Uri>(x => x != Uri)).Returns(new Task(() => { throw new HttpRequestException(); }));
             OnNext = x => htmlDocs.Add(x);
         }
 

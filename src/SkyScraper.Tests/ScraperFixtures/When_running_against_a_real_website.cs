@@ -1,8 +1,8 @@
+using System.IO;
 using NUnit.Framework;
 using SkyScraper.Observers.ConsoleWriter;
-using SkyScraper.Observers.ImageScraper;
 using System;
-using System.IO;
+using SkyScraper.Observers.ImageScraper;
 
 namespace SkyScraper.Tests.ScraperFixtures
 {
@@ -16,7 +16,7 @@ namespace SkyScraper.Tests.ScraperFixtures
             var io = new ImageScraperObserver(new FileWriter(new DirectoryInfo("c:\\temp")));
             scraper.Subscribe(io);
             scraper.Subscribe(new ConsoleWriterObserver());
-            //scraper.Subscribe(x => Console.WriteLine(x.Uri));
+            scraper.Subscribe(x => Console.WriteLine(x.Uri));
             scraper.Scrape(new Uri("http://www.cambridgecupcakes.com/"));
         }
     }
