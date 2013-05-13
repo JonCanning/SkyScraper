@@ -12,8 +12,8 @@ namespace SkyScraper.Tests.ScraperFixtures
         [Test]
         public async void Then_images_should_be_saved()
         {
-            var scraper = new Scraper(new AsyncHttpClient());
-            var io = new ImageScraperObserver(new AsyncHttpClient(), new FileWriter(new DirectoryInfo("c:\\temp")));
+            var scraper = new Scraper(new HttpClient());
+            var io = new ImageScraperObserver(new HttpClient(), new FileWriter(new DirectoryInfo("c:\\temp")));
             scraper.Subscribe(io);
             scraper.Subscribe(new ConsoleWriterObserver());
             scraper.Subscribe(x => Console.WriteLine(x.Uri));

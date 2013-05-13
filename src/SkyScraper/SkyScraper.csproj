@@ -53,7 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AsyncHttpClient.cs" />
+    <Compile Include="HttpClient.cs" />
     <Compile Include="QueuedTaskScheduler.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="HtmlDoc.cs" />
