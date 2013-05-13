@@ -1,35 +1,33 @@
-using HtmlAgilityPack;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Threading.Tasks;
+using HtmlAgilityPack;
 
 namespace SkyScraper.Observers.ImageScraper
 {
     public class ImageScraperObserver : IObserver<HtmlDoc>
     {
-        readonly ConcurrentDictionary<string, string> downloadedImages;
-        readonly ITaskRunner taskRunner;
-        readonly IHttpClient httpClient;
+        readonly ConcurrentDictionary<string, string> downloadedImages = new ConcurrentDictionary<string, string>();
         readonly IFileWriter fileWriter;
+        readonly IHttpClient httpClient;
 
-        public ImageScraperObserver(IFileWriter fileWriter)
+        public ImageScraperObserver(IHttpClient httpClient, IFileWriter fileWriter)
         {
-            this.fileWriter = fileWriter;
-            taskRunner = taskRunner ?? new AsyncTaskRunner();
-            httpClient = httpClient ?? new AsyncHttpClient();
-            downloadedImages = new ConcurrentDictionary<string, string>();
-        }
-
-        public ImageScraperObserver(ITaskRunner taskRunner, IHttpClient httpClient, IFileWriter fileWriter)
-            : this(fileWriter)
-        {
-            this.taskRunner = taskRunner;
             this.httpClient = httpClient;
             this.fileWriter = fileWriter;
         }
 
-
         public void OnNext(HtmlDoc htmlDoc)
+        {
+            OnNextHtmlDoc(htmlDoc);
+        }
+
+        public void OnError(Exception error) {}
+
+        public void OnCompleted() {}
+
+        async void OnNextHtmlDoc(HtmlDoc htmlDoc)
         {
             var htmlDocument = new HtmlDocument();
             htmlDocument.LoadHtml(htmlDoc.Html);
@@ -41,32 +39,16 @@ namespace SkyScraper.Observers.ImageScraper
                 baseUri = new Uri(baseUri.ToString().Substring(0, baseUri.ToString().LastIndexOf('/')));
             var imgSrcs = linkNodeCollection.Select(x => x.Attributes["src"].Value).Where(x => x.LinkIsLocal(baseUri.ToString()));
             foreach (var downloadUri in imgSrcs.Select(imgSrc => Uri.IsWellFormedUriString(imgSrc, UriKind.Absolute) ? new Uri(imgSrc) : new Uri(baseUri, imgSrc)))
-            {
-                taskRunner.Run(() => DownloadImage(downloadUri));
-            }
+                await DownloadImage(downloadUri);
         }
 
-        void DownloadImage(Uri uri)
+        async Task DownloadImage(Uri uri)
         {
             var fileName = uri.Segments.Last();
             if (!downloadedImages.TryAdd(fileName, null))
                 return;
-            var task = httpClient.GetByteArray(uri);
-            taskRunner.Run(task);
-            task.Try(x =>
-                         {
-                             var imgBytes = x.Result;
-                             taskRunner.Run(() => fileWriter.Write(fileName, imgBytes));
-                         });
-        }
-
-        public void OnError(Exception error)
-        {
-        }
-
-        public void OnCompleted()
-        {
-            taskRunner.WaitForAllTasks();
+            var imgBytes = await httpClient.GetByteArray(uri);
+            await fileWriter.Write(fileName, imgBytes);
         }
     }
 }

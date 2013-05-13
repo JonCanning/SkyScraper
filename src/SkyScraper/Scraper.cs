@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using HtmlAgilityPack;
 using System;
 using System.Collections.Concurrent;
@@ -9,56 +10,40 @@ namespace SkyScraper
 {
     public class Scraper : IObservable<HtmlDoc>
     {
-        readonly ConcurrentDictionary<string, string> scrapedHtmlDocs;
-        readonly ITaskRunner taskRunner;
+        readonly ConcurrentDictionary<string, string> scrapedHtmlDocs = new ConcurrentDictionary<string, string>();
         readonly IHttpClient httpClient;
-        readonly List<IObserver<HtmlDoc>> observers;
+        readonly List<IObserver<HtmlDoc>> observers = new List<IObserver<HtmlDoc>>();
         Uri baseUri;
 
-        public Scraper()
+        public Scraper(IHttpClient httpClient)
         {
-            taskRunner = taskRunner ?? new AsyncTaskRunner();
-            httpClient = httpClient ?? new AsyncHttpClient();
-            scrapedHtmlDocs = new ConcurrentDictionary<string, string>();
-            observers = new List<IObserver<HtmlDoc>>();
-        }
-
-        public Scraper(ITaskRunner taskRunner, IHttpClient httpClient)
-            : this()
-        {
-            this.taskRunner = taskRunner;
             this.httpClient = httpClient;
         }
 
-        public void Scrape(Uri uri)
+        public async Task Scrape(Uri uri)
         {
             baseUri = uri;
-            DownloadDocument(uri);
-            taskRunner.WaitForAllTasks();
+            await DownloadDocument(uri);
         }
 
-        void DownloadDocument(Uri uri)
+        async Task DownloadDocument(Uri uri)
         {
-            if (scrapedHtmlDocs.ContainsKey(uri.PathAndQuery))
+            if (!scrapedHtmlDocs.TryAdd(uri.PathAndQuery, null))
                 return;
             var task = httpClient.GetString(uri);
-            taskRunner.Run(task);
-            task.Try(x =>
-                         {
-                             var html = task.Result;
-                             taskRunner.Run(() => StoreHtmlDoc(uri, html));
-                         });
+            if (task.Status == TaskStatus.Created)
+                task.Start();
+            var html = await task.Try();
+            await StoreHtmlDoc(uri, html);
         }
 
-        void StoreHtmlDoc(Uri uri, string html)
+        async Task StoreHtmlDoc(Uri uri, string html)
         {
             var htmlDoc = new HtmlDoc
                               {
                                   Uri = uri,
                                   Html = html
                               };
-            if (!scrapedHtmlDocs.TryAdd(uri.PathAndQuery, null))
-                return;
             observers.ForEach(o => o.OnNext(htmlDoc));
             var htmlDocument = new HtmlDocument();
             htmlDocument.LoadHtml(html);
@@ -71,7 +56,7 @@ namespace SkyScraper
                 pageBaseUri += '/';
             foreach (var downloadUri in localLinks.Select(href => new Uri(new Uri(pageBaseUri), href)))
             {
-                DownloadDocument(downloadUri);
+                await DownloadDocument(downloadUri);
             }
         }
 
