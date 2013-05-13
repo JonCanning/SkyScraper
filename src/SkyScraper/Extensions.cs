@@ -18,14 +18,5 @@ namespace SkyScraper
         {
             return !str.Contains("#");
         }
-
-        public static void Try<T>(this T obj, Action<T> action)
-        {
-            try
-            {
-                action(obj);
-            }
-            catch { }
-        }
     }
 }

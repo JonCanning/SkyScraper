@@ -18,16 +18,7 @@ namespace SkyScraper.Observers.ImageScraper
             this.fileWriter = fileWriter;
         }
 
-        public void OnNext(HtmlDoc htmlDoc)
-        {
-            OnNextHtmlDoc(htmlDoc);
-        }
-
-        public void OnError(Exception error) {}
-
-        public void OnCompleted() {}
-
-        async void OnNextHtmlDoc(HtmlDoc htmlDoc)
+        public async void OnNext(HtmlDoc htmlDoc)
         {
             var htmlDocument = new HtmlDocument();
             htmlDocument.LoadHtml(htmlDoc.Html);
@@ -41,6 +32,10 @@ namespace SkyScraper.Observers.ImageScraper
             foreach (var downloadUri in imgSrcs.Select(imgSrc => Uri.IsWellFormedUriString(imgSrc, UriKind.Absolute) ? new Uri(imgSrc) : new Uri(baseUri, imgSrc)))
                 await DownloadImage(downloadUri);
         }
+
+        public void OnError(Exception error) {}
+
+        public void OnCompleted() {}
 
         async Task DownloadImage(Uri uri)
         {
