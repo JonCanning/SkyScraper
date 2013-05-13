@@ -10,14 +10,14 @@ namespace SkyScraper.Tests.ScraperFixtures
     class When_running_against_a_real_website
     {
         [Test]
-        public void Then_images_should_be_saved()
+        public async void Then_images_should_be_saved()
         {
-            var scraper = new Scraper();
-            var io = new ImageScraperObserver(new FileWriter(new DirectoryInfo("c:\\temp")));
+            var scraper = new Scraper(new AsyncHttpClient());
+            var io = new ImageScraperObserver(new AsyncHttpClient(), new FileWriter(new DirectoryInfo("c:\\temp")));
             scraper.Subscribe(io);
             scraper.Subscribe(new ConsoleWriterObserver());
             scraper.Subscribe(x => Console.WriteLine(x.Uri));
-            scraper.Scrape(new Uri("http://www.cambridgecupcakes.com/"));
+            await scraper.Scrape(new Uri("http://www.cambridgecupcakes.com/"));
         }
     }
 }

@@ -12,17 +12,14 @@ namespace SkyScraper.Tests.ScraperFixtures
     class When_website_returns_exception_from_page : ConcernForScraper
     {
         readonly List<HtmlDoc> htmlDocs = new List<HtmlDoc>();
-        string page;
+        const string Page = @"<html><a href=""page1"">link1</a></html>";
 
         protected override void Context()
         {
             base.Context();
             Uri = new Uri("http://test");
-            page = @"<html>
-                         <a href=""page1"">link1</a>
-                         </html>";
-            HttpClient.GetString(Uri).Returns(new Task<string>(() => page));
-            HttpClient.GetString(Arg.Is<Uri>(x => x != Uri)).Returns(new Task(() => { throw new HttpRequestException(); }));
+            HttpClient.GetString(Uri).Returns(Task.Factory.StartNew(() => Page));
+            HttpClient.GetString(Arg.Is<Uri>(x => x != Uri)).Returns(Task.Run(() => { throw new HttpRequestException(); }));
             OnNext = x => htmlDocs.Add(x);
         }
 
@@ -35,7 +32,7 @@ namespace SkyScraper.Tests.ScraperFixtures
         [Test]
         public void Then_htmldocs_should_contain_home_page()
         {
-            htmlDocs.Should().Contain(x => x.Uri.ToString() == "http://test/" && x.Html == page);
+            htmlDocs.Should().Contain(x => x.Uri.ToString() == "http://test/" && x.Html == Page);
         }
 
         [Test]

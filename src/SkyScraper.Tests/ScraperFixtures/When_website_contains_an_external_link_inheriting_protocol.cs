@@ -18,9 +18,9 @@ namespace SkyScraper.Tests.ScraperFixtures
             base.Context();
             Uri = new Uri("http://test");
             page = @"<html>
-                         <a href=""//http://foo"">link1</a>
+                         <a href=""//foo.com/"">link1</a>
                          </html>";
-            HttpClient.GetString(Uri).Returns(new Task<string>(() => page));
+            HttpClient.GetString(Uri).Returns(Task.Factory.StartNew(() => page));
             OnNext = x => htmlDocs.Add(x);
         }
 
@@ -39,7 +39,7 @@ namespace SkyScraper.Tests.ScraperFixtures
         [Test]
         public void Then_link_should_not_be_scraped()
         {
-            HttpClient.DidNotReceive().GetString(Arg.Is<Uri>(x => x.ToString() == "//file://foo"));
+            HttpClient.DidNotReceive().GetString(Arg.Is<Uri>(x => x.ToString() == "//file://foo.com/"));
         }
     }
 }

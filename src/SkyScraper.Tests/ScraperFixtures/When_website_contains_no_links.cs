@@ -19,7 +19,7 @@ namespace SkyScraper.Tests.ScraperFixtures
             Uri = new Uri("http://test");
             page = @"<html>
                          </html>";
-            HttpClient.GetString(Uri).Returns(new Task<string>(() => page));
+            HttpClient.GetString(Uri).Returns(Task.Factory.StartNew(() => page));
             OnNext = x => htmlDocs.Add(x);
         }
 

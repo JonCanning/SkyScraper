@@ -20,7 +20,7 @@ namespace SkyScraper.Tests.ScraperFixtures
             page = @"<html>
                          <a href=""file://foo"">link1</a>
                          </html>";
-            HttpClient.GetString(Uri).Returns(new Task<string>(() => page));
+            HttpClient.GetString(Uri).Returns(Task.Factory.StartNew(() => page));
             OnNext = x => htmlDocs.Add(x);
         }
 

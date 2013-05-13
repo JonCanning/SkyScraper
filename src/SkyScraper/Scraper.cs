@@ -30,11 +30,12 @@ namespace SkyScraper
         {
             if (!scrapedHtmlDocs.TryAdd(uri.PathAndQuery, null))
                 return;
-            var task = httpClient.GetString(uri);
-            if (task.Status == TaskStatus.Created)
-                task.Start();
-            var html = await task.Try();
-            await StoreHtmlDoc(uri, html);
+            try
+            {
+                var html = await httpClient.GetString(uri);
+                await StoreHtmlDoc(uri, html);
+            }
+            catch { }
         }
 
         async Task StoreHtmlDoc(Uri uri, string html)
