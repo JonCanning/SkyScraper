@@ -54,7 +54,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="HttpClient.cs" />
-    <Compile Include="QueuedTaskScheduler.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="HtmlDoc.cs" />
     <Compile Include="IHttpClient.cs" />
