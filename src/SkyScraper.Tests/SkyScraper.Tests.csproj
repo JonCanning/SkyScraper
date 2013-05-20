@@ -93,7 +93,6 @@
     <Compile Include="RavenDBFixtures\HtmlStoreObserverFixtures\TryAdd\When_uri_has_been_scraped.cs" />
     <Compile Include="RavenDBFixtures\HtmlStoreObserverFixtures\TryAdd\When_uri_has_not_been_scraped.cs" />
     <Compile Include="ScraperFixtures\ConcernForScraper.cs" />
-    <Compile Include="ScraperFixtures\When_running_against_a_real_website.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_anchor_link.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_explicit_anchor_link.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_explicit_local_link.cs" />
