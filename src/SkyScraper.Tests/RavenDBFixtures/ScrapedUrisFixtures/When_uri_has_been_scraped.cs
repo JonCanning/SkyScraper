@@ -1,6 +1,6 @@
-using System;
 using FluentAssertions;
 using NUnit.Framework;
+using System;
 
 namespace SkyScraper.Tests.RavenDBFixtures.ScrapedUrisFixtures
 {
@@ -17,17 +17,16 @@ namespace SkyScraper.Tests.RavenDBFixtures.ScrapedUrisFixtures
             DocumentSession.SaveChanges();
         }
 
+        [Test]
+        public void Then_one_htmldoc_should_be_stored()
+        {
+            DocumentSession.Query<HtmlDoc>().Should().HaveCount(1);
+        }
 
         [Test]
         public void Then_result_should_be_false()
         {
             result.Should().BeFalse();
-        }
-
-        [Test]
-        public void Then_one_htmldoc_should_be_stored()
-        {
-            DocumentSession.Query<HtmlDoc>().Should().HaveCount(1);
         }
     }
 }

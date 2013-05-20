@@ -5,9 +5,9 @@ namespace SkyScraper.Tests.ImageScraperObserverFixtures
 {
     abstract class ConcernForImageScraperObserverOnNext : ConcernFor<ImageScraperObserver>
     {
-        protected IHttpClient HttpClient;
         protected IFileWriter FileWriter;
         protected HtmlDoc HtmlDoc;
+        protected IHttpClient HttpClient;
 
         protected override void Context()
         {

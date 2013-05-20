@@ -1,5 +1,5 @@
-﻿using System;
-using Raven.Client;
+﻿using Raven.Client;
+using System;
 using System.Linq;
 
 namespace SkyScraper.RavenDb

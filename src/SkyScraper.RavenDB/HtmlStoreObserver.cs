@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Raven.Client;
+using System;
 using System.Linq;
-using Raven.Client;
 
 namespace SkyScraper.RavenDb
 {
@@ -20,12 +20,8 @@ namespace SkyScraper.RavenDb
             documentSession.Store(storedHtmlDoc);
         }
 
-        public void OnError(Exception error)
-        {
-        }
+        public void OnError(Exception error) { }
 
-        public void OnCompleted()
-        {
-        }
+        public void OnCompleted() { }
     }
 }

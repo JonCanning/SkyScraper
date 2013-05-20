@@ -21,9 +21,7 @@ namespace SkyScraper.Observers.ImageScraper
         static void WriteFile(string fileName, byte[] bytes)
         {
             using (var fileStream = File.OpenWrite(fileName))
-            {
                 fileStream.Write(bytes, 0, bytes.Length);
-            }
         }
     }
 }

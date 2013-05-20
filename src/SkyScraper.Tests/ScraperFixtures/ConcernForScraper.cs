@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using NSubstitute;
 using System;
 
@@ -7,8 +6,8 @@ namespace SkyScraper.Tests.ScraperFixtures
     abstract class ConcernForScraper : ConcernFor<Scraper>
     {
         protected IHttpClient HttpClient;
-        protected Uri Uri;
         protected Action<HtmlDoc> OnNext;
+        protected Uri Uri;
 
         protected override void Context()
         {

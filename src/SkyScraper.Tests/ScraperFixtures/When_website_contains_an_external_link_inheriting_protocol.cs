@@ -25,12 +25,6 @@ namespace SkyScraper.Tests.ScraperFixtures
         }
 
         [Test]
-        public void Then_one_htmldoc_should_be_returned()
-        {
-            htmlDocs.Count.Should().Be(1);
-        }
-
-        [Test]
         public void Then_htmldocs_should_contain_home_page()
         {
             htmlDocs.Should().Contain(x => x.Uri.ToString() == "http://test/" && x.Html == page);
@@ -40,6 +34,12 @@ namespace SkyScraper.Tests.ScraperFixtures
         public void Then_link_should_not_be_scraped()
         {
             HttpClient.DidNotReceive().GetString(Arg.Is<Uri>(x => x.ToString() == "//file://foo.com/"));
+        }
+
+        [Test]
+        public void Then_one_htmldoc_should_be_returned()
+        {
+            htmlDocs.Count.Should().Be(1);
         }
     }
 }

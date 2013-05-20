@@ -1,9 +1,9 @@
-using FluentAssertions;
-using NSubstitute;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using FluentAssertions;
+using NSubstitute;
+using NUnit.Framework;
 
 namespace SkyScraper.Tests.ScraperFixtures
 {
@@ -26,12 +26,6 @@ namespace SkyScraper.Tests.ScraperFixtures
         }
 
         [Test]
-        public void Then_two_htmldocs_should_be_returned()
-        {
-            htmlDocs.Count.Should().Be(2);
-        }
-
-        [Test]
         public void Then_htmldocs_should_contain_home_page()
         {
             htmlDocs.Should().Contain(x => x.Uri.ToString() == "http://test/foo" && x.Html == page);
@@ -41,6 +35,12 @@ namespace SkyScraper.Tests.ScraperFixtures
         public void Then_htmldocs_should_first_page()
         {
             htmlDocs.Should().Contain(x => x.Uri.ToString() == "http://test/foo/page1" && x.Html == "/foo/page1");
+        }
+
+        [Test]
+        public void Then_two_htmldocs_should_be_returned()
+        {
+            htmlDocs.Count.Should().Be(2);
         }
     }
 }

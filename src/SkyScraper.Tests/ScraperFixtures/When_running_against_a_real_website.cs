@@ -1,12 +1,13 @@
-using System.IO;
 using NUnit.Framework;
 using SkyScraper.Observers.ConsoleWriter;
-using System;
 using SkyScraper.Observers.ImageScraper;
+using System;
+using System.IO;
 
 namespace SkyScraper.Tests.ScraperFixtures
 {
-    [TestFixture, Explicit]
+    [TestFixture]
+    [Explicit]
     class When_running_against_a_real_website
     {
         [Test]

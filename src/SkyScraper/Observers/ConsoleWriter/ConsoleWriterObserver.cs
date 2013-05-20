@@ -9,12 +9,8 @@ namespace SkyScraper.Observers.ConsoleWriter
             Console.WriteLine(htmlDoc.Uri.ToString());
         }
 
-        public void OnError(Exception error)
-        {
-        }
+        public void OnError(Exception error) {}
 
-        public void OnCompleted()
-        {
-        }
+        public void OnCompleted() {}
     }
 }

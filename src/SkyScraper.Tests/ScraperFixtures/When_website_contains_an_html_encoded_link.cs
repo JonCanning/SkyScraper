@@ -26,9 +26,9 @@ namespace SkyScraper.Tests.ScraperFixtures
         }
 
         [Test]
-        public void Then_two_htmldocs_should_be_returned()
+        public void Then_htmldocs_should_contain_first_page()
         {
-            htmlDocs.Count.Should().Be(2);
+            htmlDocs.Should().Contain(x => x.Uri.ToString() == "http://test/page1&" && x.Html == "/page1&");
         }
 
         [Test]
@@ -38,9 +38,9 @@ namespace SkyScraper.Tests.ScraperFixtures
         }
 
         [Test]
-        public void Then_htmldocs_should_contain_first_page()
+        public void Then_two_htmldocs_should_be_returned()
         {
-            htmlDocs.Should().Contain(x => x.Uri.ToString() == "http://test/page1&" && x.Html == "/page1&");
+            htmlDocs.Count.Should().Be(2);
         }
     }
 }

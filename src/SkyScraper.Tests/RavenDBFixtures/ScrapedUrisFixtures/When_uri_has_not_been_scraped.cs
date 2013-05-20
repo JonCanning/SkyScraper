@@ -1,7 +1,7 @@
-using System;
-using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
+using System;
+using System.Linq;
 
 namespace SkyScraper.Tests.RavenDBFixtures.ScrapedUrisFixtures
 {
@@ -15,7 +15,6 @@ namespace SkyScraper.Tests.RavenDBFixtures.ScrapedUrisFixtures
             result = SUT.TryAdd(new Uri("http://test/"));
             DocumentSession.SaveChanges();
         }
-
 
         [Test]
         public void Then_result_should_be_true()

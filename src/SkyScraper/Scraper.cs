@@ -10,8 +10,8 @@ namespace SkyScraper
     public class Scraper : IObservable<HtmlDoc>
     {
         readonly IHttpClient httpClient;
-        readonly IScrapedUris scrapedUris;
         readonly List<IObserver<HtmlDoc>> observers = new List<IObserver<HtmlDoc>>();
+        readonly IScrapedUris scrapedUris;
         Uri baseUri;
 
         public Scraper(IHttpClient httpClient, IScrapedUris scrapedUris)
