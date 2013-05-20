@@ -12,7 +12,7 @@ namespace SkyScraper.Tests.ScraperFixtures
         [Test]
         public async void Then_images_should_be_saved()
         {
-            var scraper = new Scraper(new HttpClient());
+            var scraper = new Scraper(new HttpClient(), new ScrapedDocumentsDictionary());
             var io = new ImageScraperObserver(new HttpClient(), new FileWriter(new DirectoryInfo("c:\\temp")));
             scraper.Subscribe(io);
             scraper.Subscribe(new ConsoleWriterObserver());

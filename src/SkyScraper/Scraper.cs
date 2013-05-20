@@ -1,6 +1,5 @@
 using HtmlAgilityPack;
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -11,13 +10,14 @@ namespace SkyScraper
     public class Scraper : IObservable<HtmlDoc>
     {
         readonly IHttpClient httpClient;
+        readonly IScrapedDocuments scrapedDocuments;
         readonly List<IObserver<HtmlDoc>> observers = new List<IObserver<HtmlDoc>>();
-        readonly ConcurrentDictionary<string, string> scrapedHtmlDocs = new ConcurrentDictionary<string, string>();
         Uri baseUri;
 
-        public Scraper(IHttpClient httpClient)
+        public Scraper(IHttpClient httpClient, IScrapedDocuments scrapedDocuments)
         {
             this.httpClient = httpClient;
+            this.scrapedDocuments = scrapedDocuments;
         }
 
         public IDisposable Subscribe(IObserver<HtmlDoc> observer)
@@ -34,7 +34,7 @@ namespace SkyScraper
 
         async Task DownloadDocument(Uri uri)
         {
-            if (!scrapedHtmlDocs.TryAdd(uri.PathAndQuery, null))
+            if (!scrapedDocuments.TryAdd(uri))
                 return;
             try
             {

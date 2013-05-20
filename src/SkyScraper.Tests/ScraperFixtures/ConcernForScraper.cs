@@ -17,7 +17,7 @@ namespace SkyScraper.Tests.ScraperFixtures
 
         protected override Scraper CreateClassUnderTest()
         {
-            SUT = new Scraper(HttpClient);
+            SUT = new Scraper(HttpClient, new ScrapedDocumentsDictionary());
             SUT.Subscribe(OnNext);
             return SUT;
         }
