@@ -7,13 +7,19 @@ namespace SkyScraper.Tests.RavenDBFixtures
 {
     public static class DocumentSessionFactory
     {
-        public static IDocumentSession Create()
+        static EmbeddableDocumentStore documentStore;
+
+        public static IDocumentSession CreateNewStore()
         {
-            var documentStore = new EmbeddableDocumentStore { RunInMemory = true, Conventions = { DefaultQueryingConsistency = ConsistencyOptions.QueryYourWrites } };
+            documentStore = new EmbeddableDocumentStore { RunInMemory = true, Conventions = { DefaultQueryingConsistency = ConsistencyOptions.QueryYourWrites } };
             documentStore.RegisterListener(new NoStaleQueriesListener());
             documentStore.Initialize();
-            var documentSession = documentStore.OpenSession();
-            return documentSession;
+            return GetSessionFromStore();
+        }
+
+        public static IDocumentSession GetSessionFromStore()
+        {
+            return documentStore.OpenSession();
         }
 
         class NoStaleQueriesListener : IDocumentQueryListener

@@ -6,18 +6,22 @@ namespace SkyScraper.RavenDb
 {
     public class HtmlStoreObserver : IObserver<HtmlDoc>, IScrapedUris
     {
-        readonly IDocumentSession documentSession;
+        readonly Func<IDocumentSession> documentSessionFunc;
 
-        public HtmlStoreObserver(IDocumentSession documentSession)
+        public HtmlStoreObserver(Func<IDocumentSession> documentSessionFunc)
         {
-            this.documentSession = documentSession;
+            this.documentSessionFunc = documentSessionFunc;
         }
 
         public void OnNext(HtmlDoc htmlDoc)
         {
-            var storedHtmlDoc = documentSession.Query<HtmlDoc>().Customize(x => x.WaitForNonStaleResultsAsOfNow()).Single(x => x.Uri == htmlDoc.Uri);
-            storedHtmlDoc.Html = htmlDoc.Html;
-            documentSession.Store(storedHtmlDoc);
+            using (var documentSession = documentSessionFunc())
+            {
+                var storedHtmlDoc = documentSession.Query<HtmlDoc>().Customize(x => x.WaitForNonStaleResultsAsOfNow()).Single(x => x.Uri == htmlDoc.Uri);
+                storedHtmlDoc.Html = htmlDoc.Html;
+                documentSession.Store(storedHtmlDoc);
+                documentSession.SaveChanges();
+            }
         }
 
         public void OnError(Exception error) { }
@@ -26,11 +30,15 @@ namespace SkyScraper.RavenDb
 
         public bool TryAdd(Uri uri)
         {
-            if (documentSession.Query<HtmlDoc>().Any(x => x.Uri == uri))
-                return false;
-            var htmlDoc = new HtmlDoc { Uri = uri };
-            documentSession.Store(htmlDoc);
-            return true;
+            using (var documentSession = documentSessionFunc())
+            {
+                if (documentSession.Query<HtmlDoc>().Any(x => x.Uri == uri))
+                    return false;
+                var htmlDoc = new HtmlDoc { Uri = uri };
+                documentSession.Store(htmlDoc);
+                documentSession.SaveChanges();
+                return true;
+            }
         }
     }
 }
