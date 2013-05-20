@@ -3,10 +3,10 @@ using NUnit.Framework;
 using System;
 using System.Linq;
 
-namespace SkyScraper.Tests.RavenDBFixtures.ScrapedUrisFixtures
+namespace SkyScraper.Tests.RavenDBFixtures.HtmlStoreObserverFixtures.TryAdd
 {
     [TestFixture]
-    class When_uri_has_not_been_scraped : ConcernForIScrapedUris
+    class When_uri_has_not_been_scraped : ConcernForHtmlStoreObserver
     {
         bool result;
 

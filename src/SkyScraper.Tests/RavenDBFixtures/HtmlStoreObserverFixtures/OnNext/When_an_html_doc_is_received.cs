@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 
-namespace SkyScraper.Tests.RavenDBFixtures.HtmlStoreObserverFixtures
+namespace SkyScraper.Tests.RavenDBFixtures.HtmlStoreObserverFixtures.OnNext
 {
     [TestFixture]
     class When_an_html_doc_is_received : ConcernForHtmlStoreObserver

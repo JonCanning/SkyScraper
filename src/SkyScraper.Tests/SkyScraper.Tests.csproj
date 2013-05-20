@@ -89,10 +89,9 @@
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_two_identical_image.cs" />
     <Compile Include="RavenDBFixtures\DocumentSessionFactory.cs" />
     <Compile Include="RavenDBFixtures\HtmlStoreObserverFixtures\ConcernForHtmlStoreObserver.cs" />
-    <Compile Include="RavenDBFixtures\HtmlStoreObserverFixtures\When_an_html_doc_is_received.cs" />
-    <Compile Include="RavenDBFixtures\ScrapedUrisFixtures\ConcernForIScrapedUris.cs" />
-    <Compile Include="RavenDBFixtures\ScrapedUrisFixtures\When_uri_has_been_scraped.cs" />
-    <Compile Include="RavenDBFixtures\ScrapedUrisFixtures\When_uri_has_not_been_scraped.cs" />
+    <Compile Include="RavenDBFixtures\HtmlStoreObserverFixtures\OnNext\When_an_html_doc_is_received.cs" />
+    <Compile Include="RavenDBFixtures\HtmlStoreObserverFixtures\TryAdd\When_uri_has_been_scraped.cs" />
+    <Compile Include="RavenDBFixtures\HtmlStoreObserverFixtures\TryAdd\When_uri_has_not_been_scraped.cs" />
     <Compile Include="ScraperFixtures\ConcernForScraper.cs" />
     <Compile Include="ScraperFixtures\When_running_against_a_real_website.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_anchor_link.cs" />

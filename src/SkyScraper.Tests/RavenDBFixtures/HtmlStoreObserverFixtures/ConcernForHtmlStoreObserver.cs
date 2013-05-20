@@ -1,4 +1,4 @@
-﻿using Raven.Client;
+using Raven.Client;
 using SkyScraper.RavenDb;
 
 namespace SkyScraper.Tests.RavenDBFixtures.HtmlStoreObserverFixtures
