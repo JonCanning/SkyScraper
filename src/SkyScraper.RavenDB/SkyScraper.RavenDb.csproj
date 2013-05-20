@@ -45,7 +45,6 @@
   <ItemGroup>
     <Compile Include="HtmlStoreObserver.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScrapedUrisRavenDB.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -10,9 +10,10 @@ namespace SkyScraper.Tests.RavenDBFixtures.HtmlStoreObserverFixtures
     {
         protected override void Because()
         {
-            var htmlDoc = new HtmlDoc { Uri = new Uri("http://test/"), Html = "html" };
+            var htmlDoc = new HtmlDoc { Uri = new Uri("http://test/")};
             DocumentSession.Store(htmlDoc);
             DocumentSession.SaveChanges();
+            htmlDoc.Html = "html";
             SUT.OnNext(htmlDoc);
         }
 

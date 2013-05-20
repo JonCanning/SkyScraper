@@ -3,14 +3,14 @@ using SkyScraper.RavenDb;
 
 namespace SkyScraper.Tests.RavenDBFixtures.ScrapedUrisFixtures
 {
-    class ConcernForIScrapedUris : ConcernFor<ScrapedUrisRavenDb>
+    class ConcernForIScrapedUris : ConcernFor<HtmlStoreObserver>
     {
         protected IDocumentSession DocumentSession;
 
-        protected override ScrapedUrisRavenDb CreateClassUnderTest()
+        protected override HtmlStoreObserver CreateClassUnderTest()
         {
             DocumentSession = DocumentSessionFactory.Create();
-            return new ScrapedUrisRavenDb(DocumentSession);
+            return new HtmlStoreObserver(DocumentSession);
         }
     }
 }
