@@ -29,25 +29,25 @@ namespace SkyScraper
         public async Task Scrape(Uri uri)
         {
             baseUri = uri;
-            await DownloadDocument(uri);
+            await DownloadHtml(uri);
         }
 
-        async Task DownloadDocument(Uri uri)
+        async Task DownloadHtml(Uri uri)
         {
             if (!scrapedUris.TryAdd(uri))
                 return;
             try
             {
                 var html = await httpClient.GetString(uri);
-                await StoreHtmlDoc(uri, html);
+                var htmlDoc = new HtmlDoc { Uri = uri, Html = html };
+                NotifyObservers(htmlDoc);
+                await ParseLinks(html, htmlDoc);
             }
             catch { }
         }
 
-        async Task StoreHtmlDoc(Uri uri, string html)
+        async Task ParseLinks(string html, HtmlDoc htmlDoc)
         {
-            var htmlDoc = new HtmlDoc { Uri = uri, Html = html };
-            observers.ForEach(o => o.OnNext(htmlDoc));
             var htmlDocument = new HtmlDocument();
             htmlDocument.LoadHtml(html);
             var linkNodeCollection = htmlDocument.DocumentNode.SelectNodes("//a[@href]");
@@ -58,7 +58,12 @@ namespace SkyScraper
             if (pageBaseUri.Last() != '/')
                 pageBaseUri += '/';
             foreach (var downloadUri in localLinks.Select(href => new Uri(new Uri(pageBaseUri), href)))
-                await DownloadDocument(downloadUri);
+                await DownloadHtml(downloadUri);
+        }
+
+        void NotifyObservers(HtmlDoc htmlDoc)
+        {
+            observers.ForEach(o => o.OnNext(htmlDoc));
         }
 
         IEnumerable<string> LocalLinks(IEnumerable<HtmlNode> linkNodeCollection)
