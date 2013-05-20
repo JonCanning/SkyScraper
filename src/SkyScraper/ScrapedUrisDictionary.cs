@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 
 namespace SkyScraper
 {
-    public class ScrapedDocumentsDictionary : IScrapedDocuments
+    public class ScrapedUrisDictionary : IScrapedUris
     {
         readonly ConcurrentDictionary<string, string> scrapedHtmlDocs = new ConcurrentDictionary<string, string>();
 

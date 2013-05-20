@@ -10,14 +10,14 @@ namespace SkyScraper
     public class Scraper : IObservable<HtmlDoc>
     {
         readonly IHttpClient httpClient;
-        readonly IScrapedDocuments scrapedDocuments;
+        readonly IScrapedUris scrapedUris;
         readonly List<IObserver<HtmlDoc>> observers = new List<IObserver<HtmlDoc>>();
         Uri baseUri;
 
-        public Scraper(IHttpClient httpClient, IScrapedDocuments scrapedDocuments)
+        public Scraper(IHttpClient httpClient, IScrapedUris scrapedUris)
         {
             this.httpClient = httpClient;
-            this.scrapedDocuments = scrapedDocuments;
+            this.scrapedUris = scrapedUris;
         }
 
         public IDisposable Subscribe(IObserver<HtmlDoc> observer)
@@ -34,7 +34,7 @@ namespace SkyScraper
 
         async Task DownloadDocument(Uri uri)
         {
-            if (!scrapedDocuments.TryAdd(uri))
+            if (!scrapedUris.TryAdd(uri))
                 return;
             try
             {

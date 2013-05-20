@@ -2,7 +2,7 @@ using System;
 
 namespace SkyScraper
 {
-    public interface IScrapedDocuments
+    public interface IScrapedUris
     {
         bool TryAdd(Uri uri);
     }
