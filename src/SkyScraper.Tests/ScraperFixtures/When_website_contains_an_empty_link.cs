@@ -1,14 +1,14 @@
-using FluentAssertions;
-using NSubstitute;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using FluentAssertions;
+using NSubstitute;
+using NUnit.Framework;
 
 namespace SkyScraper.Tests.ScraperFixtures
 {
     [TestFixture]
-    class When_website_contains_an_external_link : ConcernForScraper
+    class When_website_contains_an_empty_link : ConcernForScraper
     {
         readonly List<HtmlDoc> htmlDocs = new List<HtmlDoc>();
         string page;
@@ -18,9 +18,11 @@ namespace SkyScraper.Tests.ScraperFixtures
             base.Context();
             Uri = new Uri("http://test");
             page = @"<html>
-                         <a href=""http://foo"">link1</a>
+                         <a>link1</a>
+                         <a href=""page1"">link1</a>
                          </html>";
             HttpClient.GetString(Uri).Returns(Task.Factory.StartNew(() => page));
+            HttpClient.GetString(Arg.Is<Uri>(x => x != Uri)).Returns(x => Task.Factory.StartNew(() => x.Arg<Uri>().PathAndQuery));
             OnNext = x => htmlDocs.Add(x);
         }
 
@@ -31,15 +33,15 @@ namespace SkyScraper.Tests.ScraperFixtures
         }
 
         [Test]
-        public void Then_link_should_not_be_scraped()
+        public void Then_link_should_be_downloaded_once()
         {
-            HttpClient.DidNotReceive().GetString(Arg.Is<Uri>(x => x.ToString() == "http://foo"));
+            HttpClient.Received(1).GetString(Arg.Is<Uri>(x => x.ToString() == "http://test/page1"));
         }
 
         [Test]
-        public void Then_one_htmldoc_should_be_returned()
+        public void Then_two_htmldocs_should_be_returned()
         {
-            htmlDocs.Count.Should().Be(1);
+            htmlDocs.Count.Should().Be(2);
         }
     }
 }

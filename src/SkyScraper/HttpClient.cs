@@ -1,4 +1,6 @@
 using System;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace SkyScraper
@@ -12,14 +14,26 @@ namespace SkyScraper
             httpClient = new System.Net.Http.HttpClient { Timeout = TimeSpan.FromMinutes(1) };
         }
 
-        public Task<string> GetString(Uri uri)
+        public async Task<string> GetString(Uri uri)
         {
-            return httpClient.GetStringAsync(uri);
+            using (var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri))
+            using (var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage))
+            {
+                if (httpResponseMessage.StatusCode != HttpStatusCode.OK || httpRequestMessage.RequestUri != uri)
+                    return null;
+                return await httpResponseMessage.Content.ReadAsStringAsync();
+            }
         }
 
-        public Task<byte[]> GetByteArray(Uri uri)
+        public async Task<byte[]> GetByteArray(Uri uri)
         {
-            return httpClient.GetByteArrayAsync(uri);
+            using (var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri))
+            using (var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage))
+            {
+                if (httpResponseMessage.StatusCode != HttpStatusCode.OK)
+                    return null;
+                return await httpResponseMessage.Content.ReadAsByteArrayAsync();
+            }
         }
     }
 }

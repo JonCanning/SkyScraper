@@ -35,9 +35,8 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="HtmlAgilityPack, Version=1.4.6.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\MyGet\packages\HtmlAgilityPack.1.4.6\lib\Net45\HtmlAgilityPack.dll</HintPath>
+    <Reference Include="CsQuery">
+      <HintPath>..\..\packages\CsQuery.1.3.4\lib\net40\CsQuery.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -59,6 +58,7 @@
     <Compile Include="HtmlDoc.cs" />
     <Compile Include="IHttpClient.cs" />
     <Compile Include="IScrapedUris.cs" />
+    <Compile Include="IScraper.cs" />
     <Compile Include="Observers\ConsoleWriter\ConsoleWriterObserver.cs" />
     <Compile Include="Observers\ImageScraper\FileWriter.cs" />
     <Compile Include="Observers\ImageScraper\IFileWriter.cs" />

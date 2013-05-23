@@ -12,11 +12,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{5BF99D
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyScraper.RavenDb", "src\SkyScraper.RavenDB\SkyScraper.RavenDb.csproj", "{4047446E-D8F1-4094-A8C8-A84993318364}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyScraper.IntegrationTests", "src\SkyScraper.IntegrationTests\SkyScraper.IntegrationTests.csproj", "{3CFB69DC-A6F1-44AF-A621-61F5DE2A39AA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FCBB2264-763D-4AAA-A3D0-0F13904A7BBF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyScraper.RavenDb", "src\SkyScraper.RavenDb\SkyScraper.RavenDb.csproj", "{4047446E-D8F1-4094-A8C8-A84993318364}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,14 +32,14 @@ Global
 		{923D516F-D88E-425D-AFE0-5A42BC0B92F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{923D516F-D88E-425D-AFE0-5A42BC0B92F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{923D516F-D88E-425D-AFE0-5A42BC0B92F0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4047446E-D8F1-4094-A8C8-A84993318364}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4047446E-D8F1-4094-A8C8-A84993318364}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4047446E-D8F1-4094-A8C8-A84993318364}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4047446E-D8F1-4094-A8C8-A84993318364}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3CFB69DC-A6F1-44AF-A621-61F5DE2A39AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3CFB69DC-A6F1-44AF-A621-61F5DE2A39AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CFB69DC-A6F1-44AF-A621-61F5DE2A39AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CFB69DC-A6F1-44AF-A621-61F5DE2A39AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4047446E-D8F1-4094-A8C8-A84993318364}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4047446E-D8F1-4094-A8C8-A84993318364}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4047446E-D8F1-4094-A8C8-A84993318364}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4047446E-D8F1-4094-A8C8-A84993318364}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

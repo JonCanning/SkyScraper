@@ -1,4 +1,4 @@
-using HtmlAgilityPack;
+using CsQuery;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,23 +7,25 @@ using System.Threading.Tasks;
 
 namespace SkyScraper
 {
-    public class Scraper : IObservable<HtmlDoc>
+    public class Scraper : IScraper, IObservable<HtmlDoc>
     {
         readonly IHttpClient httpClient;
-        readonly List<IObserver<HtmlDoc>> observers = new List<IObserver<HtmlDoc>>();
         readonly IScrapedUris scrapedUris;
         Uri baseUri;
+
+        public List<IObserver<HtmlDoc>> Observers { get; set; }
 
         public Scraper(IHttpClient httpClient, IScrapedUris scrapedUris)
         {
             this.httpClient = httpClient;
             this.scrapedUris = scrapedUris;
+            Observers = new List<IObserver<HtmlDoc>>();
         }
 
         public IDisposable Subscribe(IObserver<HtmlDoc> observer)
         {
-            observers.Add(observer);
-            return new Unsubscriber(observers, observer);
+            Observers.Add(observer);
+            return new Unsubscriber(Observers, observer);
         }
 
         public async Task Scrape(Uri uri)
@@ -39,36 +41,45 @@ namespace SkyScraper
             try
             {
                 var html = await httpClient.GetString(uri);
+                if (string.IsNullOrEmpty(html))
+                    return;
                 var htmlDoc = new HtmlDoc { Uri = uri, Html = html };
                 NotifyObservers(htmlDoc);
-                await ParseLinks(html, htmlDoc);
+                await ParseLinks(htmlDoc);
             }
             catch { }
         }
 
-        async Task ParseLinks(string html, HtmlDoc htmlDoc)
+        async Task ParseLinks(HtmlDoc htmlDoc)
         {
-            var htmlDocument = new HtmlDocument();
-            htmlDocument.LoadHtml(html);
-            var linkNodeCollection = htmlDocument.DocumentNode.SelectNodes("//a[@href]");
-            if (linkNodeCollection == null || !linkNodeCollection.Any())
-                return;
-            var localLinks = LocalLinks(linkNodeCollection);
-            var pageBaseUri = htmlDoc.Uri.Segments.Last().Contains('.') ? htmlDoc.Uri.ToString().Substring(0, htmlDoc.Uri.ToString().LastIndexOf('/')) : htmlDoc.Uri.ToString();
-            if (pageBaseUri.Last() != '/')
-                pageBaseUri += '/';
-            foreach (var downloadUri in localLinks.Select(href => new Uri(new Uri(pageBaseUri), href)))
+            var pageBase = htmlDoc.Uri.Segments.Last().Contains('.') ? htmlDoc.Uri.ToString().Substring(0, htmlDoc.Uri.ToString().LastIndexOf('/')) : htmlDoc.Uri.ToString();
+            if (!pageBase.EndsWith("/"))
+                pageBase += "/";
+            var pageBaseUri = new Uri(pageBase);
+            CQ html = htmlDoc.Html;
+            var links = html["a"].Select(x => x.GetAttribute("href")).Where(x => x != null);
+            var localLinks = LocalLinks(links).Select(x => NormalizeLink(x, pageBaseUri));
+            foreach (var downloadUri in localLinks)
                 await DownloadHtml(downloadUri);
+        }
+
+        Uri NormalizeLink(string link, Uri pageBaseUri)
+        {
+            if (link.StartsWith("/"))
+                return new Uri(baseUri, link);
+            if (link.StartsWith(baseUri.ToString()))
+                return new Uri(link);
+            return new Uri(pageBaseUri, link);
         }
 
         void NotifyObservers(HtmlDoc htmlDoc)
         {
-            observers.ForEach(o => o.OnNext(htmlDoc));
+            Observers.ForEach(o => o.OnNext(htmlDoc));
         }
 
-        IEnumerable<string> LocalLinks(IEnumerable<HtmlNode> linkNodeCollection)
+        IEnumerable<string> LocalLinks(IEnumerable<string> links)
         {
-            return linkNodeCollection.Select(x => WebUtility.HtmlDecode(x.Attributes["href"].Value)).Where(x => x.LinkIsLocal(baseUri.ToString()) && x.LinkDoesNotContainAnchor());
+            return links.Select(WebUtility.HtmlDecode).Where(x => x.LinkIsLocal(baseUri.ToString()) && x.LinkDoesNotContainAnchor());
         }
 
         class Unsubscriber : IDisposable

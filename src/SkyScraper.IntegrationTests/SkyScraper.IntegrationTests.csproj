@@ -38,7 +38,14 @@
     <Reference Include="nunit.framework">
       <HintPath>..\..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
+    <Reference Include="Raven.Abstractions">
+      <HintPath>..\..\packages\RavenDB.Client.2.0.2360\lib\net40\Raven.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Raven.Client.Lightweight">
+      <HintPath>..\..\packages\RavenDB.Client.2.0.2360\lib\net40\Raven.Client.Lightweight.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Reactive.Core">
       <HintPath>..\..\packages\Rx-Core.2.1.30214.0\lib\Net45\System.Reactive.Core.dll</HintPath>
@@ -63,10 +70,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SkyScraper.RavenDB\SkyScraper.RavenDb.csproj">
-      <Project>{4047446e-d8f1-4094-a8c8-a84993318364}</Project>
-      <Name>SkyScraper.RavenDb</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SkyScraper\SkyScraper.csproj">
       <Project>{e36e904e-2521-472f-88b4-d6f1f8e0d3b1}</Project>
       <Name>SkyScraper</Name>

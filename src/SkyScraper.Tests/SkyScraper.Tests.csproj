@@ -93,7 +93,9 @@
     <Compile Include="RavenDBFixtures\HtmlStoreObserverFixtures\TryAdd\When_uri_has_been_scraped.cs" />
     <Compile Include="RavenDBFixtures\HtmlStoreObserverFixtures\TryAdd\When_uri_has_not_been_scraped.cs" />
     <Compile Include="ScraperFixtures\ConcernForScraper.cs" />
+    <Compile Include="ScraperFixtures\When_httpclient_returns_null.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_anchor_link.cs" />
+    <Compile Include="ScraperFixtures\When_website_contains_an_empty_link.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_explicit_anchor_link.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_explicit_local_link.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_external_link.cs" />
@@ -112,7 +114,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SkyScraper.RavenDB\SkyScraper.RavenDb.csproj">
+    <ProjectReference Include="..\SkyScraper.RavenDb\SkyScraper.RavenDb.csproj">
       <Project>{4047446E-D8F1-4094-A8C8-A84993318364}</Project>
       <Name>SkyScraper.RavenDb</Name>
     </ProjectReference>
