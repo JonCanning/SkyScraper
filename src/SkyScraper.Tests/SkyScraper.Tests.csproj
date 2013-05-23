@@ -87,11 +87,6 @@
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_a_local_image_in_subdirectory.cs" />
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_image_on_named_page.cs" />
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_two_identical_image.cs" />
-    <Compile Include="RavenDBFixtures\DocumentSessionFactory.cs" />
-    <Compile Include="RavenDBFixtures\HtmlStoreObserverFixtures\ConcernForHtmlStoreObserver.cs" />
-    <Compile Include="RavenDBFixtures\HtmlStoreObserverFixtures\OnNext\When_an_html_doc_is_received.cs" />
-    <Compile Include="RavenDBFixtures\HtmlStoreObserverFixtures\TryAdd\When_uri_has_been_scraped.cs" />
-    <Compile Include="RavenDBFixtures\HtmlStoreObserverFixtures\TryAdd\When_uri_has_not_been_scraped.cs" />
     <Compile Include="ScraperFixtures\ConcernForScraper.cs" />
     <Compile Include="ScraperFixtures\When_httpclient_returns_null.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_anchor_link.cs" />
@@ -114,10 +109,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SkyScraper.RavenDb\SkyScraper.RavenDb.csproj">
-      <Project>{4047446E-D8F1-4094-A8C8-A84993318364}</Project>
-      <Name>SkyScraper.RavenDb</Name>
-    </ProjectReference>
     <ProjectReference Include="..\SkyScraper\SkyScraper.csproj">
       <Project>{E36E904E-2521-472F-88B4-D6F1F8E0D3B1}</Project>
       <Name>SkyScraper</Name>
