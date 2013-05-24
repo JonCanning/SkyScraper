@@ -6,6 +6,8 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 
 [assembly: AssemblyTitle("SkyScraper")]
+[assembly: AssemblyDescription("Web scraper / crawler / spider") ]
+[assembly: AssemblyCompany("Jon Canning") ]
 
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
