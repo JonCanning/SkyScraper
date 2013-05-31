@@ -25,6 +25,7 @@ namespace SkyScraper
         public int? MaxDepth { private get; set; }
         public Regex IgnoreLinks { private get; set; }
         public Regex IncludeLinks { private get; set; }
+        public Regex ObserverLinkFilter { private get; set; }
 
         public Scraper(IHttpClient httpClient, IScrapedUris scrapedUris)
         {
@@ -65,7 +66,8 @@ namespace SkyScraper
                 if (string.IsNullOrEmpty(html))
                     return;
                 var htmlDoc = new HtmlDoc { Uri = uri, Html = html };
-                NotifyObservers(htmlDoc);
+                if (!(uri != baseUri && ObserverLinkFilter != null && !ObserverLinkFilter.IsMatch(uri.ToString())))
+                    NotifyObservers(htmlDoc);
                 await ParseLinks(htmlDoc);
             }
             catch { }
