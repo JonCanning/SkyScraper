@@ -73,6 +73,7 @@
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_two_identical_image.cs" />
     <Compile Include="ScraperFixtures\ConcernForScraper.cs" />
     <Compile Include="ScraperFixtures\When_httpclient_returns_null.cs" />
+    <Compile Include="ScraperFixtures\When_scrape_exceed_maximum_depth.cs" />
     <Compile Include="ScraperFixtures\When_scrape_has_been_running_for_too_long.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_anchor_link.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_empty_link.cs" />

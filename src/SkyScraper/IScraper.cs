@@ -8,5 +8,6 @@ namespace SkyScraper
         IDisposable Subscribe(IObserver<HtmlDoc> observer);
         Task Scrape(Uri uri);
         List<IObserver<HtmlDoc>> Observers { get; set; }
+        TimeSpan TimeOut { set; }
     }
 }

@@ -23,6 +23,8 @@ namespace SkyScraper
             }
         }
 
+        public int? MaxDepth { get; set; }
+
         public Scraper(IHttpClient httpClient, IScrapedUris scrapedUris)
         {
             this.httpClient = httpClient;
@@ -44,6 +46,8 @@ namespace SkyScraper
 
         async Task DownloadHtml(Uri uri)
         {
+            if (MaxDepth.HasValue && uri.Segments.Length > MaxDepth + 1)
+                return;
             if (endDateTime.HasValue && DateTimeProvider.UtcNow > endDateTime)
                 return;
             if (uri.ToString().Length > 2048)
