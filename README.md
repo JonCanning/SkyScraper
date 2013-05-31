@@ -13,4 +13,5 @@ Usage
     scraper.MaxDepth = 2; //optional
     scraper.TimeOut = TimeSpan.FromMinutes(5); //optional
     scraper.IgnoreLinks = new Regex("spam"); //optional
+    scraper.IncludeLinks = new Regex("stuff"); //optional
     await scraper.Scrape(new Uri("http://www.mywebsite.com/"));
