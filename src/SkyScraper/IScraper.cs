@@ -12,5 +12,6 @@ namespace SkyScraper
         TimeSpan TimeOut { set; }
         Regex IgnoreLinks { set; }
         int? MaxDepth { set; }
+        Regex IncludeLinks { set; }
     }
 }

@@ -74,6 +74,7 @@
     <Compile Include="ScraperFixtures\ConcernForScraper.cs" />
     <Compile Include="ScraperFixtures\When_httpclient_returns_null.cs" />
     <Compile Include="ScraperFixtures\When_link_matches_ignorelinks.cs" />
+    <Compile Include="ScraperFixtures\When_link_matches_includelinks.cs" />
     <Compile Include="ScraperFixtures\When_scrape_exceed_maximum_depth.cs" />
     <Compile Include="ScraperFixtures\When_scrape_has_been_running_for_too_long.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_anchor_link.cs" />

@@ -22,10 +22,9 @@ namespace SkyScraper
                 endDateTime = DateTimeProvider.UtcNow + value;
             }
         }
-
         public int? MaxDepth { private get; set; }
-
         public Regex IgnoreLinks { private get; set; }
+        public Regex IncludeLinks { private get; set; }
 
         public Scraper(IHttpClient httpClient, IScrapedUris scrapedUris)
         {
@@ -48,7 +47,9 @@ namespace SkyScraper
 
         async Task DownloadHtml(Uri uri)
         {
-            if (IgnoreLinks != null && IgnoreLinks.IsMatch(uri.ToString()))
+            if (uri != baseUri && IncludeLinks != null && !IncludeLinks.IsMatch(uri.ToString()))
+                return;
+            if (uri != baseUri && IgnoreLinks != null && IgnoreLinks.IsMatch(uri.ToString()))
                 return;
             if (MaxDepth.HasValue && uri.Segments.Length > MaxDepth + 1)
                 return;
