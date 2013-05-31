@@ -13,10 +13,13 @@ namespace SkyScraper.Tests.ScraperFixtures
     {
         readonly List<HtmlDoc> htmlDocs = new List<HtmlDoc>();
         string page;
+        IObserver<HtmlDoc> observer; 
 
         protected override Scraper CreateClassUnderTest()
         {
             SUT = base.CreateClassUnderTest();
+            observer = Substitute.For<IObserver<HtmlDoc>>();
+            SUT.Subscribe(observer);
             SUT.IgnoreLinks = new Regex(@"link[\d]");
             return SUT;
         }
@@ -35,15 +38,9 @@ namespace SkyScraper.Tests.ScraperFixtures
         }
 
         [Test]
-        public void Then_link1_should_not_be_scraped()
+        public void Then_observer_should_be_notified_of_one_link()
         {
-            HttpClient.DidNotReceive().GetString(Arg.Is<Uri>(x => x.ToString().EndsWith("link1")));
-        }
-
-        [Test]
-        public void Then_link2_should_not_be_scraped()
-        {
-            HttpClient.DidNotReceive().GetString(Arg.Is<Uri>(x => x.ToString().EndsWith("link2")));
+            observer.Received(1).OnNext(Arg.Any<HtmlDoc>());
         }
 
         [Test]
