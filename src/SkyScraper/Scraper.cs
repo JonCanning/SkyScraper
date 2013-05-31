@@ -36,6 +36,8 @@ namespace SkyScraper
 
         async Task DownloadHtml(Uri uri)
         {
+            if (uri.ToString().Length > 2048)
+                return;
             if (!scrapedUris.TryAdd(uri))
                 return;
             try

@@ -44,7 +44,7 @@
       <HintPath>..\..\packages\NSubstitute.1.6.0.0\lib\NET40\NSubstitute.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework">
-      <HintPath>..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
+      <HintPath>..\..\packages\NUnit.2.6.2\lib\nunit.framework.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -81,6 +81,7 @@
     <Compile Include="ScraperFixtures\When_website_contains_an_external_link_inheriting_protocol.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_html_encoded_link.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_unscrapable_link.cs" />
+    <Compile Include="ScraperFixtures\When_website_contains_a_link_longer_than_2048_characters.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_no_links.cs" />
     <Compile Include="ScraperFixtures\When_scraping_a_subdirectory.cs" />
     <Compile Include="ScraperFixtures\When_website_has_three_pages.cs" />

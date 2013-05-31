@@ -1,47 +1,45 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NSubstitute;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace SkyScraper.Tests.ScraperFixtures
 {
     [TestFixture]
-    class When_website_contains_an_empty_link : ConcernForScraper
+    class When_website_contains_a_link_longer_than_2048_characters : ConcernForScraper
     {
         readonly List<HtmlDoc> htmlDocs = new List<HtmlDoc>();
         string page;
+        string link;
 
         protected override void Context()
         {
             base.Context();
             Uri = new Uri("http://test");
+            link = Enumerable.Repeat("a", 2048).Aggregate(string.Empty, (s, s1) => s += s1);
             page = @"<html>
                          <a>link1</a>
-                         <a href=""page1"">link1</a>
+                         <a href=""{0}"">link1</a>
                          </html>";
+            page = string.Format(page, link);
             HttpClient.GetString(Uri).Returns(Task.Factory.StartNew(() => page));
             HttpClient.GetString(Arg.Is<Uri>(x => x != Uri)).Returns(x => Task.Factory.StartNew(() => x.Arg<Uri>().PathAndQuery));
             OnNext = x => htmlDocs.Add(x);
         }
 
         [Test]
-        public void Then_htmldocs_should_contain_home_page()
+        public void Then_link_should_not_be_followed()
         {
-            htmlDocs.Should().Contain(x => x.Uri.ToString() == "http://test/" && x.Html == page);
+            HttpClient.DidNotReceive().GetString(Arg.Is<Uri>(x => x.ToString().EndsWith(link)));
         }
 
         [Test]
-        public void Then_link_should_be_downloaded_once()
+        public void Then_one_htmldoc_should_be_returned()
         {
-            HttpClient.Received(1).GetString(Arg.Is<Uri>(x => x.ToString() == "http://test/page1"));
-        }
-
-        [Test]
-        public void Then_two_htmldocs_should_be_returned()
-        {
-            htmlDocs.Count.Should().Be(2);
+            htmlDocs.Count.Should().Be(1);
         }
     }
 }
