@@ -13,6 +13,6 @@ Usage
     scraper.MaxDepth = 2; //optional
     scraper.TimeOut = TimeSpan.FromMinutes(5); //optional
     scraper.IgnoreLinks = new Regex("spam"); //optional - ignore links in page
-    scraper.IncludeLinks = new Regex("stuff"); //optional - scrape links on page
+    scraper.IncludeLinks = new Regex("stuff"); //optional - scrape links in page
     scraper.ObserverLinkFilter = new Regex("things"); //optional - trigger observers when link matches
     await scraper.Scrape(new Uri("http://www.mywebsite.com/"));
