@@ -47,10 +47,6 @@ namespace SkyScraper
 
         async Task DownloadHtml(Uri uri)
         {
-            if (uri != baseUri && IncludeLinks != null && !IncludeLinks.IsMatch(uri.ToString()))
-                return;
-            if (uri != baseUri && IgnoreLinks != null && IgnoreLinks.IsMatch(uri.ToString()))
-                return;
             if (MaxDepth.HasValue && uri.Segments.Length > MaxDepth + 1)
                 return;
             if (endDateTime.HasValue && DateTimeProvider.UtcNow > endDateTime)
@@ -65,7 +61,13 @@ namespace SkyScraper
                 if (string.IsNullOrEmpty(html))
                     return;
                 var htmlDoc = new HtmlDoc { Uri = uri, Html = html };
-                NotifyObservers(htmlDoc);
+                var notifyObservers = true;
+                if (uri != baseUri && IncludeLinks != null && !IncludeLinks.IsMatch(uri.ToString()))
+                    notifyObservers = false;
+                if (uri != baseUri && IgnoreLinks != null && IgnoreLinks.IsMatch(uri.ToString()))
+                    notifyObservers = false;
+                if (notifyObservers)
+                    NotifyObservers(htmlDoc);   
                 await ParseLinks(htmlDoc);
             }
             catch { }
