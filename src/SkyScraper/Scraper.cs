@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using CsQuery;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,6 @@ namespace SkyScraper
         readonly IHttpClient httpClient;
         readonly IScrapedUris scrapedUris;
         Uri baseUri;
-
         DateTime? endDateTime;
         public List<IObserver<HtmlDoc>> Observers { get; set; }
         public TimeSpan TimeOut
@@ -23,7 +23,9 @@ namespace SkyScraper
             }
         }
 
-        public int? MaxDepth { get; set; }
+        public int? MaxDepth { private get; set; }
+
+        public Regex IgnoreLinks { private get; set; }
 
         public Scraper(IHttpClient httpClient, IScrapedUris scrapedUris)
         {
@@ -46,6 +48,8 @@ namespace SkyScraper
 
         async Task DownloadHtml(Uri uri)
         {
+            if (IgnoreLinks != null && IgnoreLinks.IsMatch(uri.ToString()))
+                return;
             if (MaxDepth.HasValue && uri.Segments.Length > MaxDepth + 1)
                 return;
             if (endDateTime.HasValue && DateTimeProvider.UtcNow > endDateTime)
