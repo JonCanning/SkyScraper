@@ -15,6 +15,13 @@ namespace SkyScraper
 
         DateTime? endDateTime;
         public List<IObserver<HtmlDoc>> Observers { get; set; }
+        public TimeSpan TimeOut
+        {
+            set
+            {
+                endDateTime = DateTimeProvider.UtcNow + value;
+            }
+        }
 
         public Scraper(IHttpClient httpClient, IScrapedUris scrapedUris)
         {
@@ -29,12 +36,6 @@ namespace SkyScraper
             return new Unsubscriber(Observers, observer);
         }
 
-        public async Task Scrape(Uri uri, TimeSpan timeout)
-        {
-            endDateTime = DateTimeProvider.UtcNow + timeout;
-            await Scrape(uri);
-        }
-
         public async Task Scrape(Uri uri)
         {
             baseUri = uri;
@@ -43,7 +44,7 @@ namespace SkyScraper
 
         async Task DownloadHtml(Uri uri)
         {
-            if (endDateTime.HasValue && endDateTime < DateTimeProvider.UtcNow)
+            if (endDateTime.HasValue && DateTimeProvider.UtcNow > endDateTime)
                 return;
             if (uri.ToString().Length > 2048)
                 return;

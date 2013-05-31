@@ -13,9 +13,13 @@ namespace SkyScraper.Tests.ScraperFixtures
         readonly List<HtmlDoc> htmlDocs = new List<HtmlDoc>();
         string page;
 
-        protected override void Because()
+        protected override Scraper CreateClassUnderTest()
         {
-            SUT.Scrape(Uri, TimeSpan.FromSeconds(0)).Wait();
+            DateTimeProvider.UtcNow = DateTime.Today;
+            SUT = base.CreateClassUnderTest();
+            SUT.TimeOut = TimeSpan.FromSeconds(0);
+            DateTimeProvider.UtcNow = DateTime.Today.AddDays(1);
+            return SUT;
         }
 
         protected override void Context()
