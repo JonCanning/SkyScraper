@@ -62,7 +62,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ImageScraperObserverFixtures\ConcernForImageScrapingObserver.cs" />
+    <Compile Include="ImageScraperObserverFixtures\ConcernForImageScraperObserverOnNext.cs" />
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_an_explicit_local_image.cs" />
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_an_external_image.cs" />
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_a_local_image.cs" />
@@ -70,7 +70,7 @@
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_a_local_image_in_an_explicit_subdirectory.cs" />
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_a_local_image_in_subdirectory.cs" />
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_image_on_named_page.cs" />
-    <Compile Include="ImageScraperObserverFixtures\When_html_contains_two_identical_image.cs" />
+    <Compile Include="ImageScraperObserverFixtures\When_html_contains_two_identical_images.cs" />
     <Compile Include="ScraperFixtures\ConcernForScraper.cs" />
     <Compile Include="ScraperFixtures\When_httpclient_returns_null.cs" />
     <Compile Include="ScraperFixtures\When_link_matches_ignorelinks.cs" />
