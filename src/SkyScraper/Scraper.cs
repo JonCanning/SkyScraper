@@ -14,6 +14,7 @@ namespace SkyScraper
         readonly IScrapedUris scrapedUris;
         Uri baseUri;
         DateTime? endDateTime;
+        Action<Exception> onHttpClientException = delegate { };
         public List<IObserver<HtmlDoc>> Observers { get; set; }
         public TimeSpan TimeOut
         {
@@ -26,6 +27,11 @@ namespace SkyScraper
         public Regex IgnoreLinks { private get; set; }
         public Regex IncludeLinks { private get; set; }
         public Regex ObserverLinkFilter { private get; set; }
+        public Action<Exception> OnHttpClientException
+        {
+            get { return onHttpClientException; }
+            set { onHttpClientException = value; }
+        }
 
         public Scraper(IHttpClient httpClient, IScrapedUris scrapedUris)
         {
@@ -60,17 +66,21 @@ namespace SkyScraper
                 return;
             if (!scrapedUris.TryAdd(uri))
                 return;
+            string html = null;
             try
             {
-                var html = await httpClient.GetString(uri);
-                if (string.IsNullOrEmpty(html))
-                    return;
-                var htmlDoc = new HtmlDoc { Uri = uri, Html = html };
-                if (!(uri != baseUri && ObserverLinkFilter != null && !ObserverLinkFilter.IsMatch(uri.ToString())))
-                    NotifyObservers(htmlDoc);
-                await ParseLinks(htmlDoc);
+                html = await httpClient.GetString(uri);
             }
-            catch { }
+            catch (Exception exception)
+            {
+                OnHttpClientException(exception);
+            }
+            if (string.IsNullOrEmpty(html))
+                return;
+            var htmlDoc = new HtmlDoc { Uri = uri, Html = html };
+            if (!(uri != baseUri && ObserverLinkFilter != null && !ObserverLinkFilter.IsMatch(uri.ToString())))
+                NotifyObservers(htmlDoc);
+            await ParseLinks(htmlDoc);
         }
 
         async Task ParseLinks(HtmlDoc htmlDoc)
