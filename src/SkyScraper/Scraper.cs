@@ -54,15 +54,7 @@ namespace SkyScraper
 
         async Task DownloadHtml(Uri uri)
         {
-            if (uri != baseUri && IncludeLinks != null && !IncludeLinks.IsMatch(uri.ToString()))
-                return;
-            if (uri != baseUri && IgnoreLinks != null && IgnoreLinks.IsMatch(uri.ToString()))
-                return;
-            if (MaxDepth.HasValue && uri.Segments.Length > MaxDepth + 1)
-                return;
             if (endDateTime.HasValue && DateTimeProvider.UtcNow > endDateTime)
-                return;
-            if (uri.ToString().Length > 2048)
                 return;
             if (!scrapedUris.TryAdd(uri))
                 return;
@@ -91,7 +83,13 @@ namespace SkyScraper
             var pageBaseUri = new Uri(pageBase);
             CQ html = htmlDoc.Html;
             var links = html["a"].Select(x => x.GetAttribute("href")).Where(x => x != null);
-            var localLinks = LocalLinks(links).Select(x => NormalizeLink(x, pageBaseUri));
+            var localLinks = LocalLinks(links).Select(x => NormalizeLink(x, pageBaseUri)).Where(x => x.ToString().Length <= 2048);
+            if (IncludeLinks != null)
+                localLinks = localLinks.Where(x => IncludeLinks.IsMatch(x.ToString()));
+            if (IgnoreLinks != null)
+                localLinks = localLinks.Where(x => !IgnoreLinks.IsMatch(x.ToString()));
+            if (MaxDepth.HasValue)
+                localLinks = localLinks.Where(x => x.Segments.Length <= MaxDepth + 1);
             foreach (var downloadUri in localLinks)
                 await DownloadHtml(downloadUri);
         }

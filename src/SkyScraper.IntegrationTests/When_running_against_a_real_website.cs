@@ -21,4 +21,15 @@ namespace SkyScraper.IntegrationTests
             await scraper.Scrape(new Uri("http://www.cambridgecupcakes.com/"));
         }
     }
+
+    [TestFixture]
+    class When_handling_redirect
+    {
+        [Test]
+        public void Then_()
+        {
+            var scraper = new Scraper(new HttpClient(), new ScrapedUrisDictionary());
+            scraper.Scrape(new Uri("http://www.zoopla.co.uk/for-sale/details/27421160")).Wait();
+        }
+    }
 }
