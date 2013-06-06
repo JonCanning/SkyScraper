@@ -1,9 +1,9 @@
-using System.Text.RegularExpressions;
 using CsQuery;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SkyScraper
@@ -70,7 +70,7 @@ namespace SkyScraper
             if (string.IsNullOrEmpty(html))
                 return;
             var htmlDoc = new HtmlDoc { Uri = uri, Html = html };
-            if (!(uri != baseUri && ObserverLinkFilter != null && !ObserverLinkFilter.IsMatch(uri.ToString())))
+            if (!(ObserverLinkFilter != null && !ObserverLinkFilter.IsMatch(uri.ToString())))
                 NotifyObservers(htmlDoc);
             await ParseLinks(htmlDoc);
         }
