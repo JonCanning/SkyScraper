@@ -48,41 +48,32 @@ namespace SkyScraper
 
         public async Task Scrape(Uri uri)
         {
-            baseUri = uri;
-            await DownloadHtml(uri);
-        }
+            baseUri = baseUri ?? uri;
 
-        async Task DownloadHtml(Uri uri)
-        {
             if (endDateTime.HasValue && DateTimeProvider.UtcNow > endDateTime)
                 return;
             if (!scrapedUris.TryAdd(uri))
                 return;
-            string html = null;
+            var htmlDoc = new HtmlDoc { Uri = uri };
             try
             {
-                html = await httpClient.GetString(uri);
+                htmlDoc.Html = await httpClient.GetString(uri);
             }
             catch (Exception exception)
             {
                 OnHttpClientException(exception);
             }
-            if (string.IsNullOrEmpty(html))
+            if (string.IsNullOrEmpty(htmlDoc.Html))
                 return;
-            var htmlDoc = new HtmlDoc { Uri = uri, Html = html };
             if (!(ObserverLinkFilter != null && !ObserverLinkFilter.IsMatch(uri.ToString())))
                 NotifyObservers(htmlDoc);
-            await ParseLinks(htmlDoc);
-        }
 
-        async Task ParseLinks(HtmlDoc htmlDoc)
-        {
             var pageBase = htmlDoc.Uri.Segments.Last().Contains('.') ? htmlDoc.Uri.ToString().Substring(0, htmlDoc.Uri.ToString().LastIndexOf('/')) : htmlDoc.Uri.ToString();
             if (!pageBase.EndsWith("/"))
                 pageBase += "/";
             var pageBaseUri = new Uri(pageBase);
-            CQ html = htmlDoc.Html;
-            var links = html["a"].Select(x => x.GetAttribute("href")).Where(x => x != null);
+            CQ cq = htmlDoc.Html;
+            var links = cq["a"].Select(x => x.GetAttribute("href")).Where(x => x != null);
             var localLinks = LocalLinks(links).Select(x => NormalizeLink(x, pageBaseUri)).Where(x => x.ToString().Length <= 2048);
             if (IncludeLinks != null)
                 localLinks = localLinks.Where(x => IncludeLinks.IsMatch(x.ToString()));
@@ -90,8 +81,7 @@ namespace SkyScraper
                 localLinks = localLinks.Where(x => !IgnoreLinks.IsMatch(x.ToString()));
             if (MaxDepth.HasValue)
                 localLinks = localLinks.Where(x => x.Segments.Length <= MaxDepth + 1);
-            foreach (var downloadUri in localLinks)
-                await DownloadHtml(downloadUri);
+            localLinks.AsParallel().ForAll(x => Scrape(x).Wait());
         }
 
         Uri NormalizeLink(string link, Uri pageBaseUri)
@@ -105,7 +95,7 @@ namespace SkyScraper
 
         void NotifyObservers(HtmlDoc htmlDoc)
         {
-            Observers.ForEach(o => o.OnNext(htmlDoc));
+            Observers.AsParallel().ForAll(x => x.OnNext(htmlDoc));
         }
 
         IEnumerable<string> LocalLinks(IEnumerable<string> links)
