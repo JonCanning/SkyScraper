@@ -1,8 +1,7 @@
+using CsQuery;
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
-using System.Threading.Tasks;
-using CsQuery;
 
 namespace SkyScraper.Observers.ImageScraper
 {
@@ -26,14 +25,14 @@ namespace SkyScraper.Observers.ImageScraper
             CQ html = htmlDoc.Html;
             var imgSrcs = html["img"].Select(x => x.GetAttribute("src")).Where(x => x.LinkIsLocal(baseUri.ToString()));
             var downloadUris = imgSrcs.Select(imgSrc => Uri.IsWellFormedUriString(imgSrc, UriKind.Absolute) ? new Uri(imgSrc) : new Uri(baseUri, imgSrc));
-            downloadUris.AsParallel().ForAll(x => DownloadImage(x));
+            downloadUris.AsParallel().ForAll(DownloadImage);
         }
 
         public void OnError(Exception error) { }
 
         public void OnCompleted() { }
 
-        async Task DownloadImage(Uri uri)
+        async void DownloadImage(Uri uri)
         {
             var fileName = uri.Segments.Last();
             if (!downloadedImages.TryAdd(fileName, null))
