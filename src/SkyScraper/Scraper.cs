@@ -81,7 +81,8 @@ namespace SkyScraper
                 localLinks = localLinks.Where(x => !IgnoreLinks.IsMatch(x.ToString()));
             if (MaxDepth.HasValue)
                 localLinks = localLinks.Where(x => x.Segments.Length <= MaxDepth + 1);
-            localLinks.AsParallel().ForAll(x => Scrape(x).Wait());
+            var tasks = localLinks.Select(Scrape).ToArray();
+            Task.WaitAll(tasks);
         }
 
         Uri NormalizeLink(string link, Uri pageBaseUri)
@@ -95,7 +96,7 @@ namespace SkyScraper
 
         void NotifyObservers(HtmlDoc htmlDoc)
         {
-            Observers.AsParallel().ForAll(x => x.OnNext(htmlDoc));
+            Observers.ForEach(x => x.OnNext(htmlDoc));
         }
 
         IEnumerable<string> LocalLinks(IEnumerable<string> links)

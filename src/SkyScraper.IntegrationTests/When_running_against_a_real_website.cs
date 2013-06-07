@@ -1,8 +1,8 @@
-using System;
-using System.IO;
+using System.Diagnostics;
 using NUnit.Framework;
+using System;
+using System.Threading;
 using SkyScraper.Observers.ConsoleWriter;
-using SkyScraper.Observers.ImageScraper;
 
 namespace SkyScraper.IntegrationTests
 {
@@ -13,11 +13,14 @@ namespace SkyScraper.IntegrationTests
         [Test]
         public void Then_images_should_be_saved()
         {
+            var sw = Stopwatch.StartNew();
             var scraper = new Scraper(new HttpClient(), new ScrapedUrisDictionary());
-            var io = new ImageScraperObserver(new HttpClient(), new FileWriter(new DirectoryInfo("c:\\temp")));
-            scraper.Subscribe(io);
+            //var io = new ImageScraperObserver(new HttpClient(), new FileWriter(new DirectoryInfo("c:\\temp")));
+            //scraper.Subscribe(io);
             scraper.Subscribe(new ConsoleWriterObserver());
             scraper.Scrape(new Uri("http://www.cambridgecupcakes.com/")).Wait();
+            Console.WriteLine(sw.ElapsedMilliseconds);
+            //Thread.Sleep(10000);
         }
     }
 }
