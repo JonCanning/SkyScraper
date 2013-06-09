@@ -7,5 +7,6 @@ namespace SkyScraper
     {
         Task<string> GetString(Uri uri);
         Task<byte[]> GetByteArray(Uri uri);
+        string UserAgent { set; }
     }
 }

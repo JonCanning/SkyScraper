@@ -8,6 +8,19 @@ namespace SkyScraper
     public class HttpClient : IHttpClient
     {
         readonly System.Net.Http.HttpClient httpClient;
+        string userAgent;
+
+        public string UserAgent
+        {
+            set
+            {
+                userAgent = value;
+                const string name = "User-Agent";
+                httpClient.DefaultRequestHeaders.Remove(name);
+                httpClient.DefaultRequestHeaders.Add(name, value);
+            }
+            private get { return userAgent; }
+        }
 
         public HttpClient()
         {
