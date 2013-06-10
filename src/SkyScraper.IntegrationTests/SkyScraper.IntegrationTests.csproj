@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestWebsiteFixtures\Class1.cs" />
     <Compile Include="When_running_against_a_real_website.cs" />
   </ItemGroup>
   <ItemGroup>

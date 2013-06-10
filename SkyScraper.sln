@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyScraper.IntegrationTests
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{FCBB2264-763D-4AAA-A3D0-0F13904A7BBF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SkyScraper.TestWebsite", "src\SkyScraper.TestWebsite\SkyScraper.TestWebsite.csproj", "{E57DCD40-C46F-4933-814E-6AFA263E616A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +36,10 @@ Global
 		{3CFB69DC-A6F1-44AF-A621-61F5DE2A39AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CFB69DC-A6F1-44AF-A621-61F5DE2A39AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CFB69DC-A6F1-44AF-A621-61F5DE2A39AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E57DCD40-C46F-4933-814E-6AFA263E616A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E57DCD40-C46F-4933-814E-6AFA263E616A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E57DCD40-C46F-4933-814E-6AFA263E616A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E57DCD40-C46F-4933-814E-6AFA263E616A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -41,5 +47,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{3CFB69DC-A6F1-44AF-A621-61F5DE2A39AA} = {FCBB2264-763D-4AAA-A3D0-0F13904A7BBF}
 		{923D516F-D88E-425D-AFE0-5A42BC0B92F0} = {FCBB2264-763D-4AAA-A3D0-0F13904A7BBF}
+		{E57DCD40-C46F-4933-814E-6AFA263E616A} = {FCBB2264-763D-4AAA-A3D0-0F13904A7BBF}
 	EndGlobalSection
 EndGlobal
