@@ -7,8 +7,10 @@ namespace SkyScraper
 {
     public static class Robots
     {
-        const string DisallowRegex = @"^Disallow:\s";
-        const string AllowRegex = @"^Allow:\s";
+        const string Disallow = @"^Disallow:\s";
+        const string Allow = @"^Allow:\s";
+        static readonly Regex AllowRegex = new Regex(Allow); 
+        static readonly Regex Rules = new Regex(string.Format("{0}|{1}", Disallow, Allow));
         static IEnumerable<Rule> aggregatedRules = new Rule[0];
 
         public static void Load(string robotsTxt, string userAgent = null)
@@ -25,21 +27,21 @@ namespace SkyScraper
                 var readAgents = lines.ReadAgents().ToArray();
                 currentAgents = readAgents.Any() ? readAgents : currentAgents;
                 var line = lines.Dequeue();
-                if (line.IsRule() && currentAgents.Any() && (currentAgents.First() == "*" || currentAgents.Contains(userAgent)))
+                if (Rules.IsMatch(line) && currentAgents.Any() && (currentAgents.First() == "*" || currentAgents.Contains(userAgent)))
                     if (currentAgents.First() == "*")
                         allRulesList.Add(line);
                     else
                         botRulesList.Add(line);
             }
-            aggregatedRules = botRulesList.Concat(allRulesList).Select(x => new Rule(x.AsRegexRule(), Regex.IsMatch(x, AllowRegex))).ToArray();
+            aggregatedRules = botRulesList.Concat(allRulesList).Select(x => new Rule(x.AsRegexRule(), AllowRegex.IsMatch(x))).ToArray();
         }
 
         static IEnumerable<string> ReadAgents(this Queue<string> lines)
         {
             while (lines.Peek().StartsWith("User-agent: "))
             {
-                var line = lines.Dequeue().Substring(12);
-                var agentName = Regex.Match(line, "[^\\s]*").Value;
+                var line = lines.Dequeue();
+                var agentName = line.Split(' ')[1];
                 yield return agentName;
             }
         }
@@ -51,16 +53,9 @@ namespace SkyScraper
             return true;
         }
 
-        static bool IsRule(this string input)
-        {
-            var rules = string.Format("{0}|{1}", DisallowRegex, AllowRegex);
-            return Regex.IsMatch(input, rules);
-        }
-
         static Regex AsRegexRule(this string input)
         {
-            input = input.Substring(input.IndexOf(' ') + 1);
-            input = Regex.Match(input, "[^\\s]*").Value;
+            input = input.Split(' ')[1];
             input = input.Replace("*", ".*");
             input = string.Format("^{0}.*$", input);
             return new Regex(input);
