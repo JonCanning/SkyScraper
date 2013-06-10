@@ -9,11 +9,10 @@ namespace SkyScraper
     {
         const string DisallowRegex = @"^Disallow:\s";
         const string AllowRegex = @"^Allow:\s";
-        static Dictionary<string, string> aggregatedRules;
+        static IEnumerable<Rule> aggregatedRules;
 
         public static void Load(string robotsTxt, string userAgent = "*")
         {
-            aggregatedRules = new Dictionary<string, string>();
             var allRulesList = new List<string>();
             var botRulesList = new List<string>();
             string currentAgentName = null;
@@ -34,18 +33,13 @@ namespace SkyScraper
                     else
                         botRulesList.Add(line);
             }
-            aggregatedRules = botRulesList.Concat(allRulesList).ToDictionary(x => x, x => x.AsRegexRule());
+            aggregatedRules = botRulesList.Concat(allRulesList).Select(x => new Rule(x.AsRegexRule(), Regex.IsMatch(x, AllowRegex))).ToArray();
         }
 
         public static bool PathIsAllowed(string path)
         {
-            foreach (var rule in aggregatedRules.Where(x => Regex.IsMatch(path, x.Value)).Select(x => x.Key))
-            {
-                if (Regex.IsMatch(rule, DisallowRegex))
-                    return false;
-                if (Regex.IsMatch(rule, AllowRegex))
-                    return true;
-            }
+            foreach (var rule in aggregatedRules.Where(x => x.Regex.IsMatch(path)))
+                return rule.IsAllowed;
             return true;
         }
 
@@ -55,13 +49,25 @@ namespace SkyScraper
             return Regex.IsMatch(input, rules);
         }
 
-        static string AsRegexRule(this string input)
+        static Regex AsRegexRule(this string input)
         {
-            var regex = Regex.IsMatch(input, DisallowRegex) ? DisallowRegex : AllowRegex;
-            regex = string.Format(@"(?<={0})[^\s]*", regex);
-            input = Regex.Match(input, regex).Value;
+            input = input.Substring(input.IndexOf(' ') + 1);
+            input = Regex.Match(input, "[^\\s]*").Value;
             input = input.Replace("*", ".*");
-            return string.Format("^{0}.*$", input);
+            input = string.Format("^{0}.*$", input);
+            return new Regex(input);
+        }
+
+        class Rule
+        {
+            public Rule(Regex regex, bool isAllowed)
+            {
+                Regex = regex;
+                IsAllowed = isAllowed;
+            }
+
+            public Regex Regex { get; private set; }
+            public bool IsAllowed { get; private set; }
         }
     }
 }
