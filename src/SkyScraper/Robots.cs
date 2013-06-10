@@ -9,11 +9,11 @@ namespace SkyScraper
     {
         const string DisallowRegex = @"^Disallow:\s";
         const string AllowRegex = @"^Allow:\s";
-        static Dictionary<string, string> allRules;
+        static Dictionary<string, string> aggregatedRules;
 
         public static void Load(string robotsTxt, string userAgent = "*")
         {
-            allRules = new Dictionary<string, string>();
+            aggregatedRules = new Dictionary<string, string>();
             var allRulesList = new List<string>();
             var botRulesList = new List<string>();
             string currentAgentName = null;
@@ -34,38 +34,19 @@ namespace SkyScraper
                     else
                         botRulesList.Add(line);
             }
-            foreach (var rule in botRulesList.Concat(allRulesList))
-            {
-                var value = Regex.IsMatch(rule, DisallowRegex) ? rule.AsRegexRule(DisallowRegex) : rule.AsRegexRule(AllowRegex);
-                allRules.Add(rule, value);
-            }
+            aggregatedRules = botRulesList.Concat(allRulesList).ToDictionary(x => x, x => x.AsRegexRule());
         }
 
         public static bool PathIsAllowed(string path)
         {
-            foreach (var rule in allRules)
+            foreach (var rule in aggregatedRules.Where(x => Regex.IsMatch(path, x.Value)).Select(x => x.Key))
             {
-                if (path.IsDisallowed(rule))
+                if (Regex.IsMatch(rule, DisallowRegex))
                     return false;
-                if (path.IsAllowed(rule))
+                if (Regex.IsMatch(rule, AllowRegex))
                     return true;
             }
             return true;
-        }
-
-        static bool CheckRule(this string path, KeyValuePair<string, string> rule, string regex)
-        {
-            return Regex.IsMatch(rule.Key, regex) && Regex.IsMatch(path, rule.Value);
-        }
-
-        static bool IsDisallowed(this string path, KeyValuePair<string, string> rule)
-        {
-            return CheckRule(path, rule, DisallowRegex);
-        }
-
-        static bool IsAllowed(this string path, KeyValuePair<string, string> rule)
-        {
-            return CheckRule(path, rule, AllowRegex);
         }
 
         static bool IsRule(this string input)
@@ -74,8 +55,9 @@ namespace SkyScraper
             return Regex.IsMatch(input, rules);
         }
 
-        static string AsRegexRule(this string input, string regex)
+        static string AsRegexRule(this string input)
         {
+            var regex = Regex.IsMatch(input, DisallowRegex) ? DisallowRegex : AllowRegex;
             regex = string.Format(@"(?<={0})[^\s]*", regex);
             input = Regex.Match(input, regex).Value;
             input = input.Replace("*", ".*");
