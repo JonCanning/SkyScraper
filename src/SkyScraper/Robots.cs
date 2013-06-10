@@ -38,8 +38,9 @@ namespace SkyScraper
         {
             while (lines.Peek().StartsWith("User-agent: "))
             {
-                var line = lines.Dequeue();
-                yield return line.Substring(line.IndexOf(' ') + 1);
+                var line = lines.Dequeue().Substring(12);
+                var agentName = Regex.Match(line, "[^\\s]*").Value;
+                yield return agentName;
             }
         }
 
