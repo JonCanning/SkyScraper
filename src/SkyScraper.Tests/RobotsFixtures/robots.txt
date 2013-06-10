@@ -10,5 +10,6 @@ User-agent: bot
 Disallow: /botpath1
 Allow: /*/path3/file.txt
 
+User-agent: verybadbot
 User-agent: badbot
 Disallow: /

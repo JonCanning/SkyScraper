@@ -1,3 +1,2 @@
 ﻿User-agent: badbot
 Disallow: /
-

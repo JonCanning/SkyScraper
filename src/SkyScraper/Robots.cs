@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -11,31 +11,36 @@ namespace SkyScraper
         const string AllowRegex = @"^Allow:\s";
         static IEnumerable<Rule> aggregatedRules = new Rule[0];
 
-        public static void Load(string robotsTxt, string userAgent = "*")
+        public static void Load(string robotsTxt, string userAgent = null)
         {
             if (string.IsNullOrEmpty(robotsTxt))
                 return;
             var allRulesList = new List<string>();
             var botRulesList = new List<string>();
-            string currentAgentName = null;
+            var currentAgents = new string[0];
             robotsTxt = Regex.Replace(robotsTxt, @"\r\n|\n\r|\n|\r", "\r\n");
-            var stringReader = new StringReader(robotsTxt);
-            while (stringReader.Peek() > -1)
+            var lines = new Queue<string>(robotsTxt.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
+            while (lines.Any())
             {
-                var line = stringReader.ReadLine() ?? string.Empty;
-                var agentNameMatch = Regex.Match(line, @"(?<=^User-agent:\s)[^\s]*");
-                if (agentNameMatch.Success)
-                {
-                    currentAgentName = agentNameMatch.Value;
-                    continue;
-                }
-                if ((currentAgentName == "*" || currentAgentName == userAgent) && line.IsRule())
-                    if (currentAgentName == "*")
+                var readAgents = lines.ReadAgents().ToArray();
+                currentAgents = readAgents.Any() ? readAgents : currentAgents;
+                var line = lines.Dequeue();
+                if (line.IsRule() && currentAgents.Any() && (currentAgents.First() == "*" || currentAgents.Contains(userAgent)))
+                    if (currentAgents.First() == "*")
                         allRulesList.Add(line);
                     else
                         botRulesList.Add(line);
             }
             aggregatedRules = botRulesList.Concat(allRulesList).Select(x => new Rule(x.AsRegexRule(), Regex.IsMatch(x, AllowRegex))).ToArray();
+        }
+
+        static IEnumerable<string> ReadAgents(this Queue<string> lines)
+        {
+            while (lines.Peek().StartsWith("User-agent: "))
+            {
+                var line = lines.Dequeue();
+                yield return line.Substring(line.IndexOf(' ') + 1);
+            }
         }
 
         public static bool PathIsAllowed(string path)

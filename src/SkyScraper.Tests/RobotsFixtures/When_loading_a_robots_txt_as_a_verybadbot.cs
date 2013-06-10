@@ -1,19 +1,19 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.IO;
+using FluentAssertions;
+using NUnit.Framework;
 
 namespace SkyScraper.Tests.RobotsFixtures
 {
     [TestFixture]
-    class When_loading_a_robots_txt
+    class When_loading_a_robots_txt_as_a_verybadbot
     {
         [TestFixtureSetUp]
         public void TestFixtureSetUp()
         {
             var path = Path.Combine(Environment.CurrentDirectory, "RobotsFixtures\\robots.txt");
             var robots = File.OpenText(path).ReadToEnd();
-            Robots.Load(robots);
+            Robots.Load(robots, "verybadbot");
         }
 
         [Test]
@@ -35,9 +35,9 @@ namespace SkyScraper.Tests.RobotsFixtures
         }
 
         [Test]
-        public void Then_botpath1_should_be_allowed()
+        public void Then_botpath_should_not_be_allowed()
         {
-            Robots.PathIsAllowed("/botpath1").Should().BeTrue();
+            Robots.PathIsAllowed("/botpath").Should().BeFalse();
         }
 
         [Test]
@@ -47,9 +47,9 @@ namespace SkyScraper.Tests.RobotsFixtures
         }
 
         [Test]
-        public void Then_path1_filetxt_should_be_allowed()
+        public void Then_path1_filetxt_should_not_be_allowed()
         {
-            Robots.PathIsAllowed("/path1/file.txt").Should().BeTrue();
+            Robots.PathIsAllowed("/path1/file.txt").Should().BeFalse();
         }
     }
 }
