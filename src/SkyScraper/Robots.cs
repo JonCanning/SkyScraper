@@ -1,6 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace SkyScraper
@@ -9,33 +9,58 @@ namespace SkyScraper
     {
         const string DisallowRegex = @"^Disallow:\s";
         const string AllowRegex = @"^Allow:\s";
-        static string[] disallow;
-        static string[] allow;
+        static string[] allRules;
 
         public static void Load(string robotsTxt, string userAgent = "*")
         {
-            var addRule = false;
+            var allRulesList = new List<string>();
+            var botRulesList = new List<string>();
+            string currentAgentName = null;
             robotsTxt = Regex.Replace(robotsTxt, @"\r\n|\n\r|\n|\r", "\r\n");
             var stringReader = new StringReader(robotsTxt);
-            var rules = new StringBuilder();
             while (stringReader.Peek() > -1)
             {
                 var line = stringReader.ReadLine() ?? string.Empty;
-                var agentName = Regex.Match(line, @"(?<=^User-agent:\s).*").Value;
-                addRule = string.IsNullOrEmpty(agentName) ? addRule : agentName == "*" || agentName == userAgent;
-                if (addRule && line.IsRule())
-                    rules.AppendLine(line);
+                var agentNameMatch = Regex.Match(line, @"(?<=^User-agent:\s)[^\s]*");
+                if (agentNameMatch.Success)
+                {
+                    currentAgentName = agentNameMatch.Value;
+                    continue;
+                }
+                if ((currentAgentName == "*" || currentAgentName == userAgent) && line.IsRule())
+                    if (currentAgentName == "*")
+                        allRulesList.Add(line);
+                    else
+                        botRulesList.Add(line);
             }
-            var allRules = rules.ToString();
-            disallow = allRules.CreateRegexRules(DisallowRegex);
-            allow = allRules.CreateRegexRules(AllowRegex);
+            allRules = botRulesList.Concat(allRulesList).ToArray();
         }
 
-        public static bool PathIsAllowed(string pathAndQuery)
+        public static bool PathIsAllowed(string path)
         {
-            var disallowed = disallow.Any(x => Regex.IsMatch(pathAndQuery, x));
-            return !disallowed && allow.Any(x => Regex.IsMatch(pathAndQuery, x));
-            //return allow.Any(x => Regex.IsMatch(pathAndQuery, x)) || disallow.All(x => !Regex.IsMatch(pathAndQuery, x));
+            foreach (var rule in allRules)
+            {
+                if (path.IsDisallowed(rule))
+                    return false;
+                if (path.IsAllowed(rule))
+                    return true;
+            }
+            return true;
+        }
+
+        static bool CheckRule(this string path, string rule, string regex)
+        {
+            return Regex.IsMatch(rule, regex) && Regex.IsMatch(path, rule.AsRegexRule(regex));
+        }
+
+        static bool IsDisallowed(this string path, string rule)
+        {
+            return CheckRule(path, rule, DisallowRegex);
+        }
+
+        static bool IsAllowed(this string path, string rule)
+        {
+            return CheckRule(path, rule, AllowRegex);
         }
 
         static bool IsRule(this string input)
@@ -44,13 +69,10 @@ namespace SkyScraper
             return Regex.IsMatch(input, rules);
         }
 
-        static string[] CreateRegexRules(this string allRules, string regex)
+        static string AsRegexRule(this string input, string regex)
         {
-            return Regex.Matches(allRules, string.Format(@"(?<={0})[^\s]*", regex), RegexOptions.Multiline).Cast<Match>().Select(x => x.Groups[0].Value.RegexRule()).ToArray();
-        }
-
-        static string RegexRule(this string input)
-        {
+            regex = string.Format(@"(?<={0})[^\s]*", regex);
+            input = Regex.Match(input, regex).Value;
             input = input.Replace("*", ".*");
             return string.Format("^{0}.*$", input);
         }

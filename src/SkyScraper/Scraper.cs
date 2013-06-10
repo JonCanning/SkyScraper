@@ -15,6 +15,7 @@ namespace SkyScraper
         Uri baseUri;
         DateTime? endDateTime;
         Action<Exception> onHttpClientException = delegate { };
+        bool robotsLoaded;
 
         public List<IObserver<HtmlDoc>> Observers { get; set; }
         public TimeSpan TimeOut
@@ -29,6 +30,7 @@ namespace SkyScraper
         public Regex IncludeLinks { private get; set; }
         public Regex ObserverLinkFilter { private get; set; }
         public bool EnableRobotsProtocol { get; set; }
+        public string UserAgentName { get; set; }
 
         public Action<Exception> OnHttpClientException
         {
@@ -52,6 +54,20 @@ namespace SkyScraper
         public async Task Scrape(Uri uri)
         {
             baseUri = baseUri ?? uri;
+
+            if (EnableRobotsProtocol)
+            {
+                if (!robotsLoaded)
+                {
+                    var robotsUri = new Uri(uri.GetLeftPart(UriPartial.Authority) + "/robots.txt");
+                    var robotsTxt = await httpClient.GetString(robotsUri);
+                    Robots.Load(robotsTxt, UserAgentName);
+                    robotsLoaded = true;
+                }
+                if (!Robots.PathIsAllowed(uri.PathAndQuery))
+                    return;
+            }
+
 
             if (endDateTime.HasValue && DateTimeProvider.UtcNow > endDateTime)
                 return;

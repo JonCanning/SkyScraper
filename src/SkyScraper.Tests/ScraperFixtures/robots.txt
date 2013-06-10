@@ -1,2 +1,5 @@
 ﻿User-agent: *
+Disallow: /page1
+
+User-agent: badbot
 Disallow: /

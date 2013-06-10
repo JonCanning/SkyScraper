@@ -16,5 +16,6 @@ namespace SkyScraper
         Regex IncludeLinks { set; }
         Regex ObserverLinkFilter { set; }
         bool EnableRobotsProtocol { get; set; }
+        string UserAgentName { get; set; }
     }
 }
