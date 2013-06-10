@@ -54,7 +54,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestWebsiteFixtures\Class1.cs" />
+    <Compile Include="TestWebsiteFixtures\SetUpFixture.cs" />
+    <Compile Include="TestWebsiteFixtures\When_running_against_test_website_with_agent_badbot.cs" />
+    <Compile Include="TestWebsiteFixtures\When_running_against_test_website_with_agent_goodbot.cs" />
     <Compile Include="When_running_against_a_real_website.cs" />
   </ItemGroup>
   <ItemGroup>

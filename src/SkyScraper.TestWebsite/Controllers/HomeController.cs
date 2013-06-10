@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 
 namespace SkyScraper.TestWebsite.Controllers
 {
@@ -18,7 +14,7 @@ namespace SkyScraper.TestWebsite.Controllers
         public ActionResult About()
         {
             ViewBag.Message = "Your app description page.";
-
+            ViewBag.UserAgent = Request.UserAgent;
             return View();
         }
 
