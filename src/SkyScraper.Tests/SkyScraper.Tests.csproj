@@ -77,6 +77,8 @@
     <Compile Include="RobotsFixtures\When_loading_a_robots_txt_as_a_badbot.cs" />
     <Compile Include="RobotsFixtures\When_loading_a_robots_txt_as_a_named_user_agent.cs" />
     <Compile Include="RobotsFixtures\When_loading_a_robots_txt_as_a_verybadbot.cs" />
+    <Compile Include="RobotsFixtures\When_reading_rightmove_robots_txt.cs" />
+    <Compile Include="RobotsFixtures\When_reading_rightmove_robots_txt_as_TrovitBot.cs" />
     <Compile Include="ScraperFixtures\ConcernForScraper.cs" />
     <Compile Include="ScraperFixtures\When_httpclient_returns_null.cs" />
     <Compile Include="ScraperFixtures\When_link_matches_ignorelinks.cs" />
@@ -113,6 +115,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="RobotsFixtures\rightmove.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="RobotsFixtures\robots.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -9,7 +9,7 @@ namespace SkyScraper
     {
         const string Disallow = @"^Disallow:\s";
         const string Allow = @"^Allow:\s";
-        static readonly Regex AllowRegex = new Regex(Allow); 
+        static readonly Regex AllowRegex = new Regex(Allow);
         static readonly Regex Rules = new Regex(string.Format("{0}|{1}", Disallow, Allow));
         static IEnumerable<Rule> aggregatedRules = new Rule[0];
 
@@ -56,8 +56,11 @@ namespace SkyScraper
         static Regex AsRegexRule(this string input)
         {
             input = input.Split(' ')[1];
-            input = input.Replace("*", ".*");
-            input = string.Format("^{0}.*$", input);
+            input = Regex.Escape(input);
+            input = input.Replace("\\*", ".*");
+            if (!input.EndsWith(".*"))
+                input += ".*";
+            input = string.Format("^{0}$", input);
             return new Regex(input);
         }
 

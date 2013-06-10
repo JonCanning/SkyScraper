@@ -51,5 +51,11 @@ namespace SkyScraper.Tests.RobotsFixtures
         {
             Robots.PathIsAllowed("/path1/file.txt").Should().BeTrue();
         }
+
+        [Test]
+        public void Then_login_should_not_be_allowed()
+        {
+            Robots.PathIsAllowed("/login.html?ok=1").Should().BeFalse();
+        }
     }
 }

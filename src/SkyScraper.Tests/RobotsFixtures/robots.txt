@@ -5,6 +5,7 @@ Disallow: /path1 #comment
 Disallow: /path2
 #Disallow: /commentedpath
 Disallow: /*/path3
+Disallow: /login.html?*
 
 User-agent: bot
 Disallow: /botpath1
