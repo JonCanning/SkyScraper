@@ -9,10 +9,11 @@ namespace SkyScraper
     {
         const string DisallowRegex = @"^Disallow:\s";
         const string AllowRegex = @"^Allow:\s";
-        static string[] allRules;
+        static Dictionary<string, string> allRules;
 
         public static void Load(string robotsTxt, string userAgent = "*")
         {
+            allRules = new Dictionary<string, string>();
             var allRulesList = new List<string>();
             var botRulesList = new List<string>();
             string currentAgentName = null;
@@ -33,7 +34,11 @@ namespace SkyScraper
                     else
                         botRulesList.Add(line);
             }
-            allRules = botRulesList.Concat(allRulesList).ToArray();
+            foreach (var rule in botRulesList.Concat(allRulesList))
+            {
+                var value = Regex.IsMatch(rule, DisallowRegex) ? rule.AsRegexRule(DisallowRegex) : rule.AsRegexRule(AllowRegex);
+                allRules.Add(rule, value);
+            }
         }
 
         public static bool PathIsAllowed(string path)
@@ -48,17 +53,17 @@ namespace SkyScraper
             return true;
         }
 
-        static bool CheckRule(this string path, string rule, string regex)
+        static bool CheckRule(this string path, KeyValuePair<string, string> rule, string regex)
         {
-            return Regex.IsMatch(rule, regex) && Regex.IsMatch(path, rule.AsRegexRule(regex));
+            return Regex.IsMatch(rule.Key, regex) && Regex.IsMatch(path, rule.Value);
         }
 
-        static bool IsDisallowed(this string path, string rule)
+        static bool IsDisallowed(this string path, KeyValuePair<string, string> rule)
         {
             return CheckRule(path, rule, DisallowRegex);
         }
 
-        static bool IsAllowed(this string path, string rule)
+        static bool IsAllowed(this string path, KeyValuePair<string, string> rule)
         {
             return CheckRule(path, rule, AllowRegex);
         }
