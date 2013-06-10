@@ -72,6 +72,7 @@
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_a_local_image_in_subdirectory.cs" />
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_image_on_named_page.cs" />
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_two_identical_images.cs" />
+    <Compile Include="RobotsFixtures\When_loading_an_empty_robots_txt.cs" />
     <Compile Include="RobotsFixtures\When_loading_a_robots_txt.cs" />
     <Compile Include="RobotsFixtures\When_loading_a_robots_txt_as_a_badbot.cs" />
     <Compile Include="RobotsFixtures\When_loading_a_robots_txt_as_a_named_user_agent.cs" />

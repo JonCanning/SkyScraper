@@ -9,10 +9,12 @@ namespace SkyScraper
     {
         const string DisallowRegex = @"^Disallow:\s";
         const string AllowRegex = @"^Allow:\s";
-        static IEnumerable<Rule> aggregatedRules;
+        static IEnumerable<Rule> aggregatedRules = new Rule[0];
 
         public static void Load(string robotsTxt, string userAgent = "*")
         {
+            if (string.IsNullOrEmpty(robotsTxt))
+                return;
             var allRulesList = new List<string>();
             var botRulesList = new List<string>();
             string currentAgentName = null;

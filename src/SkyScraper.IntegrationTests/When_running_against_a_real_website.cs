@@ -1,8 +1,7 @@
-using System.Diagnostics;
 using NUnit.Framework;
-using System;
-using System.Threading;
 using SkyScraper.Observers.ConsoleWriter;
+using System;
+using System.Diagnostics;
 
 namespace SkyScraper.IntegrationTests
 {
