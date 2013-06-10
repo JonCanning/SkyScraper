@@ -31,7 +31,7 @@ namespace SkyScraper.Tests.ScraperFixtures
 
         protected override void Because()
         {
-            SUT.EnableRobotsProtocol = true;
+            SUT.DisableRobotsProtocol = false;
             base.Because();
         }
 

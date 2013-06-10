@@ -17,6 +17,7 @@ namespace SkyScraper.Tests.ScraperFixtures
         protected override Scraper CreateClassUnderTest()
         {
             SUT = new Scraper(HttpClient, new ScrapedUrisDictionary());
+            SUT.DisableRobotsProtocol = true;
             SUT.Subscribe(OnNext);
             return SUT;
         }

@@ -15,7 +15,6 @@ namespace SkyScraper
         Uri baseUri;
         DateTime? endDateTime;
         Action<Exception> onHttpClientException = delegate { };
-        bool robotsLoaded;
 
         public List<IObserver<HtmlDoc>> Observers { get; set; }
         public TimeSpan TimeOut
@@ -29,8 +28,7 @@ namespace SkyScraper
         public Regex IgnoreLinks { private get; set; }
         public Regex IncludeLinks { private get; set; }
         public Regex ObserverLinkFilter { private get; set; }
-        public bool EnableRobotsProtocol { get; set; }
-        public string UserAgentName { get; set; }
+        public bool DisableRobotsProtocol { get; set; }
 
         public Action<Exception> OnHttpClientException
         {
@@ -53,22 +51,21 @@ namespace SkyScraper
 
         public async Task Scrape(Uri uri)
         {
-            baseUri = baseUri ?? uri;
+            baseUri = uri;
 
-            if (EnableRobotsProtocol)
+            if (!DisableRobotsProtocol)
             {
-                if (!robotsLoaded)
-                {
-                    var robotsUri = new Uri(uri.GetLeftPart(UriPartial.Authority) + "/robots.txt");
-                    var robotsTxt = await httpClient.GetString(robotsUri);
-                    Robots.Load(robotsTxt, UserAgentName);
-                    robotsLoaded = true;
-                }
-                if (!Robots.PathIsAllowed(uri.PathAndQuery))
-                    return;
+                var robotsUri = new Uri(uri.GetLeftPart(UriPartial.Authority) + "/robots.txt");
+                var robotsTxt = await httpClient.GetString(robotsUri);
+                Robots.Load(robotsTxt, httpClient.UserAgentName);
             }
+            DoScrape(uri).Wait();
+        }
 
-
+        async Task DoScrape(Uri uri)
+        {
+            if (!DisableRobotsProtocol && !Robots.PathIsAllowed(uri.PathAndQuery))
+                return;
             if (endDateTime.HasValue && DateTimeProvider.UtcNow > endDateTime)
                 return;
             if (!scrapedUris.TryAdd(uri))
@@ -100,7 +97,7 @@ namespace SkyScraper
                 localLinks = localLinks.Where(x => !IgnoreLinks.IsMatch(x.ToString()));
             if (MaxDepth.HasValue)
                 localLinks = localLinks.Where(x => x.Segments.Length <= MaxDepth + 1);
-            var tasks = localLinks.Select(Scrape).ToArray();
+            var tasks = localLinks.Select(DoScrape).ToArray();
             Task.WaitAll(tasks);
         }
 
