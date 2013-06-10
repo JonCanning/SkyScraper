@@ -15,5 +15,6 @@ namespace SkyScraper
         int? MaxDepth { set; }
         Regex IncludeLinks { set; }
         Regex ObserverLinkFilter { set; }
+        bool EnableRobotsProtocol { get; set; }
     }
 }

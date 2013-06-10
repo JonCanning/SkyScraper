@@ -39,6 +39,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\FluentAssertions.2.0.1\lib\net45\FluentAssertions.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="NSubstitute, Version=1.6.0.0, Culture=neutral, PublicKeyToken=92dd2e9066daa5ca, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\NSubstitute.1.6.0.0\lib\NET40\NSubstitute.dll</HintPath>
@@ -71,6 +72,9 @@
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_a_local_image_in_subdirectory.cs" />
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_image_on_named_page.cs" />
     <Compile Include="ImageScraperObserverFixtures\When_html_contains_two_identical_images.cs" />
+    <Compile Include="RobotsFixtures\When_loading_a_robots_txt.cs" />
+    <Compile Include="RobotsFixtures\When_loading_a_robots_txt_as_a_badbot.cs" />
+    <Compile Include="RobotsFixtures\When_loading_a_robots_txt_as_a_named_user_agent.cs" />
     <Compile Include="ScraperFixtures\ConcernForScraper.cs" />
     <Compile Include="ScraperFixtures\When_httpclient_returns_null.cs" />
     <Compile Include="ScraperFixtures\When_link_matches_ignorelinks.cs" />
@@ -104,7 +108,14 @@
       <Name>SkyScraper</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="RobotsFixtures\robots.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ScraperFixtures\robots.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

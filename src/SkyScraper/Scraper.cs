@@ -15,6 +15,7 @@ namespace SkyScraper
         Uri baseUri;
         DateTime? endDateTime;
         Action<Exception> onHttpClientException = delegate { };
+
         public List<IObserver<HtmlDoc>> Observers { get; set; }
         public TimeSpan TimeOut
         {
@@ -27,6 +28,8 @@ namespace SkyScraper
         public Regex IgnoreLinks { private get; set; }
         public Regex IncludeLinks { private get; set; }
         public Regex ObserverLinkFilter { private get; set; }
+        public bool EnableRobotsProtocol { get; set; }
+
         public Action<Exception> OnHttpClientException
         {
             get { return onHttpClientException; }

@@ -24,7 +24,7 @@ namespace SkyScraper
 
         public HttpClient()
         {
-            httpClient = new System.Net.Http.HttpClient { Timeout = TimeSpan.FromMinutes(1) };
+            httpClient = new System.Net.Http.HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip }) { Timeout = TimeSpan.FromMinutes(1) };
         }
 
         public async Task<string> GetString(Uri uri)

@@ -1,0 +1,14 @@
+﻿#Comment
+User-agent: *
+Disallow: /path1 #comment
+Disallow: /path2
+#Disallow: /commentedpath
+Allow: /path1/file.txt
+Disallow: /*/path3
+
+User-agent: bot
+Disallow: /botpath1
+Allow: /*/path3/file.txt
+
+User-agent: badbot
+Disallow: /
