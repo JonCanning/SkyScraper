@@ -14,3 +14,5 @@ Allow: /*/path3/file.txt
 User-agent: verybadbot #comment
 User-agent: badbot
 Disallow: /
+
+Sitemap: http://foo/sitemap.xml

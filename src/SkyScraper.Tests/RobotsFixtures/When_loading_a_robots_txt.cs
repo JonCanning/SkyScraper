@@ -57,5 +57,11 @@ namespace SkyScraper.Tests.RobotsFixtures
         {
             Robots.PathIsAllowed("/login.html?ok=1").Should().BeFalse();
         }
+
+        [Test]
+        public void Then_sitemap_should_be_set()
+        {
+            Robots.SiteMap.Should().Be("http://foo/sitemap.xml");
+        }
     }
 }

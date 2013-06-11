@@ -1,18 +1,18 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
+using System.Collections.Generic;
+using System.IO;
 
 namespace SkyScraper.Tests.RobotsFixtures
 {
     [TestFixture]
-    class When_reading_rightmove_robots_txt_as_TrovitBot
+    class When_reading_example1_robots_txt
     {
         [Test]
         public void Then_disallows_should_be_respected()
         {
-            const string robotsTxt = "RobotsFixtures\\rightmove.txt";
-            Robots.Load(File.ReadAllText(robotsTxt), "TrovitBot");
+            const string robotsTxt = "RobotsFixtures\\example1.txt";
+            Robots.Load(File.ReadAllText(robotsTxt));
             var lines = new Queue<string>(File.ReadAllLines(robotsTxt));
             while (lines.Peek() != "User-agent: *")
             {
@@ -26,7 +26,7 @@ namespace SkyScraper.Tests.RobotsFixtures
                 Robots.PathIsAllowed(rule).Should().BeFalse();
             }
 
-            Robots.PathIsAllowed("/path").Should().BeFalse();
+            Robots.PathIsAllowed("/path").Should().BeTrue();
         }
     }
 }

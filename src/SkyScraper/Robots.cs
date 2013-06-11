@@ -13,6 +13,8 @@ namespace SkyScraper
         static readonly Regex Rules = new Regex(string.Format("{0}|{1}", Disallow, Allow));
         static IEnumerable<Rule> aggregatedRules = new Rule[0];
 
+        public static string SiteMap { get; private set; }
+
         public static void Load(string robotsTxt, string userAgent = null)
         {
             if (string.IsNullOrEmpty(robotsTxt))
@@ -24,8 +26,11 @@ namespace SkyScraper
             var lines = new Queue<string>(robotsTxt.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
             while (lines.Any())
             {
+                SetSiteMap(lines);
                 var readAgents = lines.ReadAgents().ToArray();
                 currentAgents = readAgents.Any() ? readAgents : currentAgents;
+                if (!lines.Any())
+                    continue;
                 var line = lines.Dequeue();
                 if (Rules.IsMatch(line) && currentAgents.Any() && (currentAgents.First() == "*" || currentAgents.Contains(userAgent)))
                     if (currentAgents.First() == "*")
@@ -36,14 +41,16 @@ namespace SkyScraper
             aggregatedRules = botRulesList.Concat(allRulesList).Select(x => new Rule(x.AsRegexRule(), AllowRegex.IsMatch(x))).ToArray();
         }
 
+        static void SetSiteMap(this Queue<string> lines)
+        {
+            if (lines.Any() && lines.Peek().StartsWith("Sitemap: "))
+                SiteMap = lines.Dequeue().Split(' ')[1];
+        }
+
         static IEnumerable<string> ReadAgents(this Queue<string> lines)
         {
-            while (lines.Peek().StartsWith("User-agent: "))
-            {
-                var line = lines.Dequeue();
-                var agentName = line.Split(' ')[1];
-                yield return agentName;
-            }
+            while (lines.Any() && lines.Peek().StartsWith("User-agent: "))
+                yield return lines.Dequeue().Split(' ')[1];
         }
 
         public static bool PathIsAllowed(string path)

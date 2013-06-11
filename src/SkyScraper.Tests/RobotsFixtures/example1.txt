@@ -1,6 +1,4 @@
-﻿# robots.txt for http://www.rightmove.co.uk
-
-User-agent: Mediapartners-Google
+﻿User-agent: Mediapartners-Google
 Disallow:
 
 User-Agent: MJ12bot
@@ -67,5 +65,3 @@ Disallow: /
 
 User-agent: spider
 Disallow: /
-
-Sitemap: http://www.rightmove.co.uk/sitemap.xml

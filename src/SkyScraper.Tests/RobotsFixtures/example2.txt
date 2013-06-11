@@ -1,0 +1,62 @@
+﻿User-agent: *
+Disallow: /datafeed
+Disallow: /widgets
+Disallow: /graph
+Disallow: /ajax
+Disallow: /dynimgs
+Disallow: /cgi-bin
+Disallow: /violation
+Disallow: /xmlfeed
+Disallow: /myaccount
+Disallow: /ze
+Disallow: /signin
+Disallow: /register
+Disallow: /contact
+Disallow: /askme/rating/*
+Disallow: /to-rent/contact/*
+Disallow: /to-rent/details/print/
+Disallow: /for-sale/contact/*
+Disallow: /for-sale/details/print/
+Disallow: /*/newest/*&pn=*
+Disallow: /*/newest/*?pn=*$
+Disallow: /*/reduced/*&pn=*
+Disallow: /*/reduced/*?pn=*$
+Disallow: /*property_type=flats&q=*&pn=*
+Disallow: */flats/*/?pn=*$
+Disallow: /*property_type=houses&q=*&pn=*
+Disallow: */houses/*/?pn=*$
+Disallow: /property/estimate/
+Disallow: /appraisal
+Disallow: /*radius=
+Allow: /*radius=0&pn
+Disallow: /tracking/
+Disallow: /*?rpn=*
+Disallow: /*?qpn=
+Disallow: /downloads
+Disallow: /overseas
+Disallow: /*5765/ZPG/*
+Disallow: /property/values/compare/*
+Disallow: /property/report-content/
+Disallow: /find-agents/missing/
+Disallow: /property/incorrect/
+Disallow: /find-agents/error/
+Disallow: /trustedtradesmen
+Disallow: /property/edit/
+Disallow: /property/add/
+Disallow: /appraisal
+Disallow: /tips
+Disallow: */add/
+Disallow: /friend/
+
+# Baidu  (zai hui)
+User-agent: Baiduspider
+Disallow: /
+
+# Slurp (Still slurping why?)
+User-agent: Slurp
+Disallow: /
+
+# Mozilla/5.0 (compatible; proximic; +http://www.proximic.com/info/spider.php)
+# blocked as they are making incorrect requests
+User-agent: proximic
+Disallow: /
