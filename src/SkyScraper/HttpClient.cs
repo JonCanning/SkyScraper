@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -29,23 +30,27 @@ namespace SkyScraper
 
         public async Task<string> GetString(Uri uri)
         {
-            using (var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri))
-            using (var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage))
-            {
-                if (httpResponseMessage.StatusCode != HttpStatusCode.OK || httpRequestMessage.RequestUri != uri)
-                    return null;
-                return await httpResponseMessage.Content.ReadAsStringAsync();
-            }
+            return await Get(uri, x => x.ReadAsStringAsync());
         }
 
         public async Task<byte[]> GetByteArray(Uri uri)
         {
+            return await Get(uri, x => x.ReadAsByteArrayAsync());
+        }
+
+        public async Task<Stream> GetStream(Uri uri)
+        {
+            return await Get(uri, x => x.ReadAsStreamAsync());
+        }
+
+        async Task<T> Get<T>(Uri uri, Func<HttpContent, Task<T>> content)
+        {
             using (var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, uri))
             using (var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage))
             {
-                if (httpResponseMessage.StatusCode != HttpStatusCode.OK)
-                    return null;
-                return await httpResponseMessage.Content.ReadAsByteArrayAsync();
+                if (httpResponseMessage.StatusCode != HttpStatusCode.OK || httpRequestMessage.RequestUri != uri)
+                    return default(T);
+                return await content(httpResponseMessage.Content);
             }
         }
     }
