@@ -1,3 +1,4 @@
+using FluentAssertions;
 using NSubstitute;
 using NUnit.Framework;
 using System;
@@ -7,17 +8,16 @@ using System.Threading.Tasks;
 namespace SkyScraper.Tests.ScraperFixtures
 {
     [TestFixture]
-    class When_website_has_two_identical_links : ConcernForScraper
+    class When_website_contains_link_to_path_not_in_baseuri : ConcernForScraper
     {
         readonly List<HtmlDoc> htmlDocs = new List<HtmlDoc>();
 
         protected override void Context()
         {
             base.Context();
-            Uri = new Uri("http://test");
+            Uri = new Uri("http://test/foo/page1");
             var page = @"<html>
-                         <a href=""page1"">link1</a>
-                         <a href=""page1"">link1</a>
+                         <a href=""/bar"">link1</a>
                          </html>";
             HttpClient.GetString(Uri).Returns(Task.Factory.StartNew(() => page));
             HttpClient.GetString(Arg.Is<Uri>(x => x != Uri)).Returns(x => Task.Factory.StartNew(() => x.Arg<Uri>().PathAndQuery));
@@ -25,9 +25,9 @@ namespace SkyScraper.Tests.ScraperFixtures
         }
 
         [Test]
-        public void Then_link_should_be_downloaded_once()
+        public void Then_only_baseuri_should_be_downloaded()
         {
-            HttpClient.Received(1).GetString(Arg.Is<Uri>(x => x.ToString() == "http://test/page1"));
+            htmlDocs.Should().HaveCount(1).And.Contain(x => x.Uri.ToString() == "http://test/foo/page1");
         }
     }
 }

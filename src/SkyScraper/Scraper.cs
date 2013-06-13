@@ -90,7 +90,7 @@ namespace SkyScraper
             var pageBaseUri = new Uri(pageBase);
             CQ cq = htmlDoc.Html;
             var links = cq["a"].Select(x => x.GetAttribute("href")).Where(x => x != null);
-            var localLinks = LocalLinks(links).Select(x => NormalizeLink(x, pageBaseUri)).Where(x => x.ToString().Length <= 2048);
+            var localLinks = LocalLinks(links).Select(x => NormalizeLink(x, pageBaseUri)).Where(x => x.ToString().StartsWith(baseUri.ToString()) && x.ToString().Length <= 2048);
             if (IncludeLinks != null)
                 localLinks = localLinks.Where(x => IncludeLinks.IsMatch(x.ToString()));
             if (IgnoreLinks != null)
