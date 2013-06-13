@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace SkyScraper
@@ -30,7 +31,8 @@ namespace SkyScraper
 
         public async Task<string> GetString(Uri uri)
         {
-            return await Get(uri, x => x.ReadAsStringAsync());
+            var bytes = await Get(uri, x => x.ReadAsByteArrayAsync());
+            return bytes == null ? null : Encoding.UTF8.GetString(bytes);
         }
 
         public async Task<byte[]> GetByteArray(Uri uri)
