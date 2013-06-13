@@ -98,7 +98,7 @@
     <Compile Include="ScraperFixtures\When_website_contains_an_html_encoded_link.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_an_unscrapable_link.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_a_link_longer_than_2048_characters.cs" />
-    <Compile Include="ScraperFixtures\When_website_contains_link_to_path_higher_than_baseuri.cs" />
+    <Compile Include="ScraperFixtures\When_website_contains_link_to_path_not_in_baseuri.cs" />
     <Compile Include="ScraperFixtures\When_website_contains_no_links.cs" />
     <Compile Include="ScraperFixtures\When_scraping_a_subdirectory.cs" />
     <Compile Include="ScraperFixtures\When_website_has_three_pages.cs" />
