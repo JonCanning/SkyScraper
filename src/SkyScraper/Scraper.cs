@@ -14,7 +14,8 @@ namespace SkyScraper
         readonly IScrapedUris scrapedUris;
         Uri baseUri;
         DateTime? endDateTime;
-        Action<Exception> onHttpClientException = delegate { };
+        public event Action<Uri> OnScrape = delegate { };
+        public event Action<Exception> OnHttpClientException = delegate { };
 
         public List<IObserver<HtmlDoc>> Observers { get; set; }
         public TimeSpan TimeOut
@@ -29,12 +30,6 @@ namespace SkyScraper
         public Regex IncludeLinks { private get; set; }
         public Regex ObserverLinkFilter { private get; set; }
         public bool DisableRobotsProtocol { get; set; }
-
-        public Action<Exception> OnHttpClientException
-        {
-            get { return onHttpClientException; }
-            set { onHttpClientException = value; }
-        }
 
         public Scraper(IHttpClient httpClient, IScrapedUris scrapedUris)
         {
@@ -64,6 +59,7 @@ namespace SkyScraper
 
         async Task DoScrape(Uri uri)
         {
+            OnScrape(uri);
             if (endDateTime.HasValue && DateTimeProvider.UtcNow > endDateTime)
                 return;
             if (!scrapedUris.TryAdd(uri))

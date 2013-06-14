@@ -13,6 +13,8 @@ namespace SkyScraper.Tests.ScraperFixtures
     {
         readonly List<HtmlDoc> htmlDocs = new List<HtmlDoc>();
         const string Page = @"<html><a href=""page1"">link1</a></html>";
+        bool error;
+        Uri uri;
 
         protected override void Context()
         {
@@ -21,6 +23,14 @@ namespace SkyScraper.Tests.ScraperFixtures
             HttpClient.GetString(Uri).Returns(Task.Factory.StartNew(() => Page));
             HttpClient.GetString(Arg.Is<Uri>(x => x != Uri)).Returns(Task.Run(() => { throw new HttpRequestException(); }));
             OnNext = x => htmlDocs.Add(x);
+        }
+
+        protected override Scraper CreateClassUnderTest()
+        {
+            SUT = base.CreateClassUnderTest();
+            SUT.OnHttpClientException += delegate { error = true; };
+            SUT.OnScrape += x => uri = x;
+            return SUT;
         }
 
         [Test]
@@ -39,6 +49,18 @@ namespace SkyScraper.Tests.ScraperFixtures
         public void Then_one_htmldoc_should_be_returned()
         {
             htmlDocs.Count.Should().Be(1);
+        }
+
+        [Test]
+        public void Then_error_should_be_true()
+        {
+            error.Should().BeTrue();
+        }
+
+        [Test]
+        public void Then_uri_should_be_set()
+        {
+            uri.ToString().Should().Be("http://test/page1");
         }
     }
 }
