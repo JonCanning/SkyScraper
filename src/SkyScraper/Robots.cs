@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -11,7 +12,7 @@ namespace SkyScraper
         const string Allow = @"^Allow:\s";
         static readonly Regex AllowRegex = new Regex(Allow);
         static readonly Regex Rules = new Regex(string.Format("{0}|{1}", Disallow, Allow));
-        static IEnumerable<Rule> aggregatedRules = new Rule[0];
+        static ConcurrentQueue<Rule> aggregatedRules;
 
         public static string SiteMap { get; private set; }
 
@@ -38,8 +39,13 @@ namespace SkyScraper
                     else
                         botRulesList.Add(line);
             }
-            aggregatedRules = botRulesList.Concat(allRulesList).Select(x => new Rule(x.AsRegexRule(), AllowRegex.IsMatch(x))).ToArray();
+            aggregatedRules = new ConcurrentQueue<Rule>(botRulesList.AsRules().Concat(allRulesList.AsRules()));
         }
+
+        static IEnumerable<Rule> AsRules(this IEnumerable<string> rules)
+        {
+            return rules.Select(x => new Rule(x.AsRegexRule(), AllowRegex.IsMatch(x)));
+        } 
 
         static void SetSiteMap(this Queue<string> lines)
         {
@@ -55,7 +61,7 @@ namespace SkyScraper
 
         public static bool PathIsAllowed(string path)
         {
-            foreach (var rule in aggregatedRules.Where(x => x.Regex.IsMatch(path)))
+            foreach (var rule in aggregatedRules.Where(rule => rule.Regex.IsMatch(path)))
                 return rule.IsAllowed;
             return true;
         }
