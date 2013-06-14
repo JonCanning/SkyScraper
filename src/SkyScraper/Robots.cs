@@ -12,7 +12,7 @@ namespace SkyScraper
         const string Allow = @"^Allow:\s";
         static readonly Regex AllowRegex = new Regex(Allow);
         static readonly Regex Rules = new Regex(string.Format("{0}|{1}", Disallow, Allow));
-        static ConcurrentQueue<Rule> aggregatedRules;
+        static ConcurrentQueue<Rule> aggregatedRules = new ConcurrentQueue<Rule>();
 
         public static string SiteMap { get; private set; }
 
