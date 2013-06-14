@@ -64,11 +64,11 @@ namespace SkyScraper
 
         async Task DoScrape(Uri uri)
         {
-            if (!DisableRobotsProtocol && !Robots.PathIsAllowed(uri.PathAndQuery))
-                return;
             if (endDateTime.HasValue && DateTimeProvider.UtcNow > endDateTime)
                 return;
             if (!scrapedUris.TryAdd(uri))
+                return;
+            if (!DisableRobotsProtocol && !Robots.PathIsAllowed(uri.PathAndQuery))
                 return;
             var htmlDoc = new HtmlDoc { Uri = uri };
             try
