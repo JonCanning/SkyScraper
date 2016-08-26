@@ -7,6 +7,8 @@ namespace SkyScraper.Observers.ImageScraper
 {
     public class ImageScraperObserver : IObserver<HtmlDoc>
     {
+        public event Action<Exception> OnOperationCanceledException = delegate { };
+        
         readonly ConcurrentDictionary<string, string> downloadedImages = new ConcurrentDictionary<string, string>();
         readonly IFileWriter fileWriter;
         readonly IHttpClient httpClient;
@@ -37,8 +39,15 @@ namespace SkyScraper.Observers.ImageScraper
             var fileName = uri.Segments.Last();
             if (!downloadedImages.TryAdd(fileName, null))
                 return;
-            var imgBytes = await httpClient.GetByteArray(uri);
-            fileWriter.Write(fileName, imgBytes);
+            try
+            {
+                var imgBytes = await httpClient.GetByteArray(uri);
+                fileWriter.Write(fileName, imgBytes);
+            }
+            catch (OperationCanceledException ex)
+            {
+                OnOperationCanceledException(ex);
+            }
         }
     }
 }
