@@ -13,9 +13,15 @@ namespace SkyScraper.Observers.ImageScraper
 
         public void Write(string fileName, byte[] bytes)
         {
-            fileName = Path.Combine(directoryInfo.FullName, fileName);
-            using (var fileStream = File.OpenWrite(fileName))
-                fileStream.Write(bytes, 0, bytes.Length);
+            if (fileName != null | bytes != null)
+            {
+                fileName = Path.Combine(directoryInfo.FullName, fileName);
+                using (var fileStream = File.OpenWrite(fileName))
+                {
+                    if (fileStream != null)
+                        fileStream.Write(bytes, 0, bytes.Length);
+                }
+            }
         }
     }
 }
